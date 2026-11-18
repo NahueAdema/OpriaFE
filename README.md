@@ -232,9 +232,19 @@ Los errores de la API llegan como Problem Details (RFC 9457) y se exponen con
 
 ## Deploy
 
-El build es estático/cliente y puede hostearse en cualquier plataforma que
-sirva Next.js (Vercel, Netlify, etc.). Configurá `NEXT_PUBLIC_API_URL` con la
-URL pública del backend antes de compilar.
+El sitio está publicado en `https://opriadev.netlify.app/` y el backend en
+`https://opriabe.onrender.com/`.
+
+La URL del backend se inyecta en tiempo de build con `NEXT_PUBLIC_API_URL`.
+En Netlify cargá:
+
+```
+NEXT_PUBLIC_API_URL=https://opriabe.onrender.com/v1
+```
+
+y hacé un **deploy nuevo**: los valores `NEXT_PUBLIC_*` quedan embebidos en el
+bundle, así que cambiar la variable sin recompilar no alcanza. En el backend,
+`CORS_ORIGINS` debe incluir `https://opriadev.netlify.app`.
 
 ### CI / CD
 
@@ -258,7 +268,7 @@ Los workflows viven en `.github/workflows/`:
 | Nombre                  | Default                            | Uso                                             |
 | ----------------------- | ---------------------------------- | ----------------------------------------------- |
 | `NETLIFY_DEPLOY_ENABLED` | `false`                          | Poner `true` para habilitar el deploy automático |
-| `NEXT_PUBLIC_API_URL`   | `http://127.0.0.1:3001/v1`       | URL pública del backend usada en el build       |
+| `NEXT_PUBLIC_API_URL`   | `https://opriabe.onrender.com/v1` | URL pública del backend usada en el build       |
 
 En Netlify configurá el mismo `NEXT_PUBLIC_API_URL` (y el comando de build
 `npm run build`) porque el build hook solo inicia el pipeline: no compila en
