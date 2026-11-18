@@ -1,0 +1,56 @@
+name: Deploy frontend
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: opriafe-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Disparar build en Netlify
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' ||
+         github.event.workflow_run.conclusion == 'success') &&
+        vars.NETLIFY_DEPLOY_ENABLED == 'true'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger Netlify build hook
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${NETLIFY_BUILD_HOOK_URL:-}" ]; then
+            echo 'Falta el secreto NETLIFY_BUILD_HOOK_URL' >&2
+            exit 1
+          fi
+          response=$(curl -fsS -X POST \
+            -H 'Content-Type: application/json' \
+            --data '{}' \
+            "$NETLIFY_BUILD_HOOK_URL")
+          echo 'Build hook disparado'
+          printf '%s\n' "$response" | jq '.' || printf '%s\n' "$response"
+        env:
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+
+      - name: Summary
+        shell: bash
+        run: |
+          {
+            echo '### Deploy frontend'
+            echo
+            echo "- Commit: \`$DEPLOY_SHA\`"
+            echo '- Netlify: build hook disparado desde un CI exitoso.'
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}

@@ -235,3 +235,31 @@ Los errores de la API llegan como Problem Details (RFC 9457) y se exponen con
 El build es estático/cliente y puede hostearse en cualquier plataforma que
 sirva Next.js (Vercel, Netlify, etc.). Configurá `NEXT_PUBLIC_API_URL` con la
 URL pública del backend antes de compilar.
+
+### CI / CD
+
+Los workflows viven en `.github/workflows/`:
+
+- `ci.yml`: corre en push a `main`, en pull requests y por disparo manual.
+  Instala con `npm ci`, ejecuta `npm run lint` y `npm run build`. La URL de la
+  API se toma de la variable `NEXT_PUBLIC_API_URL` (o el default local).
+- `deploy.yml`: escucha la finalización de `CI` en `main` (o un disparo manual)
+  y solo actúa si `NETLIFY_DEPLOY_ENABLED=true`. Dispara un build hook de
+  Netlify; es Netlify quien clona el repo, compila y publica.
+
+#### Secrets
+
+| Nombre                   | Uso                                                        |
+| ------------------------ | ---------------------------------------------------------- |
+| `NETLIFY_BUILD_HOOK_URL` | URL del build hook creado en Netlify para este sitio        |
+
+#### Variables
+
+| Nombre                  | Default                            | Uso                                             |
+| ----------------------- | ---------------------------------- | ----------------------------------------------- |
+| `NETLIFY_DEPLOY_ENABLED` | `false`                          | Poner `true` para habilitar el deploy automático |
+| `NEXT_PUBLIC_API_URL`   | `http://127.0.0.1:3001/v1`       | URL pública del backend usada en el build       |
+
+En Netlify configurá el mismo `NEXT_PUBLIC_API_URL` (y el comando de build
+`npm run build`) porque el build hook solo inicia el pipeline: no compila en
+GitHub. Así el deploy queda desacoplado de la versión del plugin de Next.
