@@ -21,6 +21,7 @@ import { api } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { initials } from '@/lib/utils';
 import { useAuth } from './auth-provider';
+import { ThemeToggle } from './theme-toggle';
 
 const navigation = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
@@ -113,8 +114,8 @@ export function Shell({ children }: { children: ReactNode }) {
                 className={cn(
                   'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                   active
-                    ? 'bg-surface/10 text-white shadow-sm'
-                    : 'text-white/70 hover:bg-white/10 hover:text-white',
+                    ? 'bg-white/12 text-white shadow-sm ring-1 ring-white/10'
+                    : 'text-white/70 hover:bg-white/8 hover:text-white',
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -167,7 +168,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-surface/80 px-4 backdrop-blur lg:px-8">
           <button
             type="button"
-            className="rounded-lg p-2 text-white/70 transition hover:bg-accent-soft hover:text-foreground lg:hidden"
+            className="rounded-lg p-2 text-subtle-foreground transition hover:bg-accent-soft hover:text-foreground lg:hidden"
             onClick={() => setOpen(true)}
             aria-label="Abrir menú"
           >
@@ -177,12 +178,13 @@ export function Shell({ children }: { children: ReactNode }) {
             <p className="truncate text-sm font-semibold text-foreground">
               {tenant?.name}
             </p>
-            <p className="truncate text-xs text-white/70">
+            <p className="truncate text-xs text-subtle-foreground">
               opria.app/{tenant?.slug}
             </p>
           </div>
-          <div className="ml-auto hidden items-center gap-2 sm:flex">
-            <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground capitalize">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
+            <span className="hidden rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground capitalize sm:inline-flex">
               {tenant?.role}
             </span>
           </div>

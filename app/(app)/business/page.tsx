@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Save } from 'lucide-react';
+import { Building2, Mail, Save, Shield } from 'lucide-react';
 import { api } from '@/lib/api';
 import { businessFormSchema, type BusinessFormValues } from '@/lib/schemas';
 import { TIMEZONES } from '@/lib/utils';
@@ -150,13 +150,18 @@ export default function BusinessPage() {
         className="space-y-4"
       >
         <Card>
-          <div className="border-b border-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-foreground">Perfil</h2>
-            <p className="text-xs text-subtle-foreground">
-              Nombre, URL y zona horaria del negocio.
-            </p>
+          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
+              <Building2 className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">Perfil</h2>
+              <p className="text-xs text-subtle-foreground">
+                Nombre, URL y zona horaria del negocio.
+              </p>
+            </div>
           </div>
-          <div className="grid gap-4 px-5 py-5 sm:grid-cols-2">
+          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
             <Field
               label="Nombre del negocio"
               htmlFor="business-name"
@@ -213,13 +218,18 @@ export default function BusinessPage() {
         </Card>
 
         <Card>
-          <div className="border-b border-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-foreground">Contacto</h2>
-            <p className="text-xs text-subtle-foreground">
-              Datos visibles para tus clientes.
-            </p>
+          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
+              <Mail className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">Contacto</h2>
+              <p className="text-xs text-subtle-foreground">
+                Datos visibles para tus clientes.
+              </p>
+            </div>
           </div>
-          <div className="grid gap-4 px-5 py-5 sm:grid-cols-2">
+          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
             <Field
               label="Ciudad"
               htmlFor="business-city"
@@ -273,15 +283,20 @@ export default function BusinessPage() {
         </Card>
 
         <Card>
-          <div className="border-b border-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-foreground">
-              Políticas de reserva
-            </h2>
-            <p className="text-xs text-subtle-foreground">
-              Reglas que aplica el motor al calcular disponibilidad.
-            </p>
+          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
+              <Shield className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">
+                Políticas de reserva
+              </h2>
+              <p className="text-xs text-subtle-foreground">
+                Reglas que aplica el motor al calcular disponibilidad.
+              </p>
+            </div>
           </div>
-          <div className="grid gap-4 px-5 py-5 sm:grid-cols-2">
+          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
             <Field
               label="Anticipación mínima (minutos)"
               htmlFor="business-min-advance"
