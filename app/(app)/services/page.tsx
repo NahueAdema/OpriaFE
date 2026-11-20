@@ -109,20 +109,20 @@ export default function ServicesPage() {
             onClick={() => setFilter(option.value)}
             className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
               filter === option.value
-                ? 'border-slate-900 bg-slate-900 text-white'
-                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900'
+                ? 'border-border bg-primary text-white'
+                : 'border-border bg-surface text-muted-foreground hover:border-border hover:text-foreground'
             }`}
           >
             {option.label}
           </button>
         ))}
-        <span className="ml-auto text-xs text-slate-500">
+        <span className="ml-auto text-xs text-subtle-foreground">
           {services.length} servicios · {activeCount} activos
         </span>
       </div>
 
       {servicesQuery.isLoading ? (
-        <Card className="flex items-center justify-center gap-3 p-10 text-sm text-slate-500">
+        <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
           <Spinner />
           Cargando servicios…
         </Card>
@@ -156,7 +156,7 @@ export default function ServicesPage() {
               <div className="flex items-start justify-between gap-3 px-5 py-4">
                 <div className="min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="truncate text-base font-semibold text-slate-900">
+                    <h2 className="truncate text-base font-semibold text-foreground">
                       {service.name}
                     </h2>
                     {service.active ? (
@@ -166,7 +166,7 @@ export default function ServicesPage() {
                     )}
                   </div>
                   {service.description ? (
-                    <p className="line-clamp-2 text-sm text-slate-500">
+                    <p className="line-clamp-2 text-sm text-subtle-foreground">
                       {service.description}
                     </p>
                   ) : null}
@@ -175,7 +175,7 @@ export default function ServicesPage() {
                   <button
                     type="button"
                     onClick={() => setEditing({ service })}
-                    className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                    className="rounded-lg p-2 text-subtle-foreground transition hover:bg-accent-soft hover:text-foreground"
                     aria-label={`Editar ${service.name}`}
                     title="Editar"
                   >
@@ -185,7 +185,7 @@ export default function ServicesPage() {
                     <button
                       type="button"
                       onClick={() => handleDeactivate(service)}
-                      className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                      className="rounded-lg p-2 text-subtle-foreground transition hover:bg-error/10 hover:text-error"
                       aria-label={`Desactivar ${service.name}`}
                       title="Desactivar"
                     >
@@ -195,15 +195,15 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 px-5 py-3 text-sm">
-                <span className="inline-flex items-center gap-1.5 text-slate-600">
-                  <Clock3 className="h-4 w-4 text-slate-400" />
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border px-5 py-3 text-sm">
+                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                  <Clock3 className="h-4 w-4 text-subtle-foreground" />
                   {service.durationMinutes} min
                   {service.bufferMinutes > 0
                     ? ` + ${service.bufferMinutes} min buffer`
                     : ''}
                 </span>
-                <span className="font-medium text-slate-900">
+                <span className="font-medium text-foreground">
                   $ {formatMoney(service.priceCents)}
                 </span>
                 <Badge
@@ -438,10 +438,10 @@ function ServiceFormModal({
           </Field>
         </div>
 
-        <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-700">
+        <label className="flex items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-sm text-foreground">
           <input
             type="checkbox"
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-border text-primary focus:ring-accent-soft"
             {...form.register('active')}
           />
           Servicio activo (visible para reservar)

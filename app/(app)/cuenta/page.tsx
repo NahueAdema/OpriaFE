@@ -80,14 +80,14 @@ export default function AccountPage() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <Card className="p-5 sm:p-6">
           <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-primary">
               <KeyRound className="h-4 w-4" />
             </span>
             <div>
-              <h2 className="text-base font-semibold text-slate-900">
+              <h2 className="text-base font-semibold text-foreground">
                 Cambiar contraseña
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-subtle-foreground">
                 Al menos 10 caracteres, distinta de la actual.
               </p>
             </div>
@@ -153,26 +153,26 @@ export default function AccountPage() {
 
         <div className="space-y-6">
           <Card className="p-5">
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-slate-400 uppercase">
+            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
               <ShieldCheck className="h-3.5 w-3.5" />
               Cuenta
             </div>
             <dl className="mt-3 space-y-3 text-sm">
               <div>
-                <dt className="text-xs text-slate-500">Nombre</dt>
-                <dd className="font-medium text-slate-900">
+                <dt className="text-xs text-subtle-foreground">Nombre</dt>
+                <dd className="font-medium text-foreground">
                   {auth?.user.name ?? '—'}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-slate-500">Email</dt>
-                <dd className="font-medium break-all text-slate-900">
+                <dt className="text-xs text-subtle-foreground">Email</dt>
+                <dd className="font-medium break-all text-foreground">
                   {auth?.user.email ?? '—'}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-slate-500">Negocio</dt>
-                <dd className="font-medium text-slate-900">
+                <dt className="text-xs text-subtle-foreground">Negocio</dt>
+                <dd className="font-medium text-foreground">
                   {auth?.tenant.name ?? '—'}
                 </dd>
               </div>
@@ -180,8 +180,8 @@ export default function AccountPage() {
           </Card>
 
           <Card className="p-5">
-            <h2 className="text-sm font-semibold text-slate-900">Sesión</h2>
-            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            <h2 className="text-sm font-semibold text-foreground">Sesión</h2>
+            <p className="mt-1 text-xs leading-relaxed text-subtle-foreground">
               Cerrá la sesión en este dispositivo. Las demás sesiones ya se
               cierran al cambiar la contraseña.
             </p>

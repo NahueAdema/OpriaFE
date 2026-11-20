@@ -3,6 +3,96 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Brand */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+
+  /* Surfaces */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+
+  /* Typography */
+  --color-foreground: var(--text-primary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-subtle-foreground: var(--text-muted);
+
+  /* Status */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+  --color-ai: var(--ai);
+}
+
+:root {
+  color-scheme: light;
+
+  /* Brand */
+  --primary: #7069C7;
+  --primary-hover: #625BB5;
+  --primary-dark: #514A9E;
+  --secondary: #948DDB;
+  --accent: #B9B3EC;
+  --accent-soft: #EAE8FA;
+
+  /* Backgrounds */
+  --background: #F8F8FC;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+
+  /* Borders */
+  --border: #E8E7F0;
+
+  /* Typography */
+  --text-primary: #27263A;
+  --text-secondary: #77758C;
+  --text-muted: #9B99AC;
+
+  /* Status */
+  --success: #35A987;
+  --warning: #E5A348;
+  --error: #DF6678;
+  --info: #5795D2;
+  --ai: #A18BCB;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Brand */
+  --primary: #7069C7;
+  --primary-hover: #817ADB;
+  --primary-dark: #514A9E;
+  --secondary: #948DDB;
+  --accent: #B9B3EC;
+  --accent-soft: #35304F;
+
+  /* Backgrounds */
+  --background: #191827;
+  --surface: #211F32;
+  --surface-elevated: #2B2840;
+
+  /* Borders */
+  --border: #39354F;
+
+  /* Typography */
+  --text-primary: #F5F4FC;
+  --text-secondary: #B8B6C9;
+  --text-muted: #858198;
+
+  /* Status */
+  --success: #55C9A3;
+  --warning: #F0B75E;
+  --error: #F07889;
+  --info: #76B4EB;
+  --ai: #B49AE5;
 }
 
 html {
@@ -10,5 +100,7 @@ html {
 }
 
 body {
+  background-color: var(--background);
+  color: var(--text-primary);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

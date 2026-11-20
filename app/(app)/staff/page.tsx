@@ -105,7 +105,7 @@ export default function StaffPage() {
       ) : null}
 
       {staffQuery.isLoading ? (
-        <Card className="flex items-center justify-center gap-3 p-10 text-sm text-slate-500">
+        <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
           <Spinner />
           Cargando equipo…
         </Card>
@@ -124,10 +124,10 @@ export default function StaffPage() {
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr] lg:items-start">
           <Card className="overflow-hidden">
-            <div className="border-b border-slate-100 px-4 py-3 text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <div className="border-b border-border px-4 py-3 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
               {staff.length} integrantes
             </div>
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-border">
               {staff.map((member) => (
                 <li key={member.id}>
                   <button
@@ -138,25 +138,25 @@ export default function StaffPage() {
                     }}
                     className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${
                       member.id === resolvedId
-                        ? 'bg-indigo-50/70'
-                        : 'hover:bg-slate-50'
+                        ? 'bg-accent-soft/70'
+                        : 'hover:bg-background'
                     }`}
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-dark text-xs font-semibold text-white">
                       {initials(member.name)}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-slate-900">
+                      <span className="block truncate text-sm font-medium text-foreground">
                         {member.name}
                       </span>
-                      <span className="block text-xs text-slate-500">
+                      <span className="block text-xs text-subtle-foreground">
                         {member.services.length} servicios
                       </span>
                     </span>
                     {member.active ? (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-success" />
                     ) : (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-slate-300" />
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-border" />
                     )}
                   </button>
                 </li>
@@ -169,12 +169,12 @@ export default function StaffPage() {
               <Card>
                 <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-semibold text-white">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-semibold text-white">
                       {initials(selected.name)}
                     </span>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-base font-semibold text-slate-900">
+                        <h2 className="text-base font-semibold text-foreground">
                           {selected.name}
                         </h2>
                         {selected.active ? (
@@ -183,7 +183,7 @@ export default function StaffPage() {
                           <Badge tone="neutral">Inactivo</Badge>
                         )}
                       </div>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-subtle-foreground">
                         {selected.services.length > 0
                           ? selected.services
                               .map((service) => service.name)
@@ -193,7 +193,7 @@ export default function StaffPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-1 overflow-x-auto border-t border-slate-100 px-3 py-2">
+                <div className="flex gap-1 overflow-x-auto border-t border-border px-3 py-2">
                   {TABS.map((item) => {
                     const Icon = item.icon;
 
@@ -204,8 +204,8 @@ export default function StaffPage() {
                         onClick={() => setTab(item.id)}
                         className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
                           tab === item.id
-                            ? 'bg-slate-900 text-white'
-                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                            ? 'bg-primary text-white'
+                            : 'text-muted-foreground hover:bg-accent-soft hover:text-foreground'
                         }`}
                       >
                         <Icon className="h-4 w-4" />
@@ -288,9 +288,9 @@ function ProfileTab({ member }: { member: StaffMember }) {
 
   return (
     <Card>
-      <div className="border-b border-slate-100 px-5 py-4">
-        <h3 className="text-sm font-semibold text-slate-900">Perfil</h3>
-        <p className="text-xs text-slate-500">
+      <div className="border-b border-border px-5 py-4">
+        <h3 className="text-sm font-semibold text-foreground">Perfil</h3>
+        <p className="text-xs text-subtle-foreground">
           Nombre visible y estado del integrante.
         </p>
       </div>
@@ -328,10 +328,10 @@ function ProfileTab({ member }: { member: StaffMember }) {
           <Input id="staff-name" {...form.register('name')} />
         </Field>
 
-        <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-700">
+        <label className="flex items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-sm text-foreground">
           <input
             type="checkbox"
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-border text-primary focus:ring-accent-soft"
             {...form.register('active')}
           />
           Activo (puede recibir turnos)
@@ -400,9 +400,9 @@ function ServicesTab({
 
   return (
     <Card>
-      <div className="border-b border-slate-100 px-5 py-4">
-        <h3 className="text-sm font-semibold text-slate-900">Servicios</h3>
-        <p className="text-xs text-slate-500">
+      <div className="border-b border-border px-5 py-4">
+        <h3 className="text-sm font-semibold text-foreground">Servicios</h3>
+        <p className="text-xs text-subtle-foreground">
           Solo los servicios marcados aparecen como disponibles para esta
           persona.
         </p>
@@ -422,21 +422,21 @@ function ServicesTab({
         ) : null}
 
         {sorted.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500">
+          <p className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-sm text-subtle-foreground">
             Primero creá servicios en la sección Servicios.
           </p>
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {sorted.map((service) => (
               <li key={service.id}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 text-sm transition hover:border-slate-300 hover:bg-slate-50">
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border px-3 py-2.5 text-sm transition hover:border-border hover:bg-background">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="h-4 w-4 rounded border-border text-primary focus:ring-accent-soft"
                     checked={selected.includes(service.id)}
                     onChange={() => toggle(service.id)}
                   />
-                  <span className="min-w-0 flex-1 truncate text-slate-900">
+                  <span className="min-w-0 flex-1 truncate text-foreground">
                     {service.name}
                   </span>
                   {!service.active ? (
@@ -565,11 +565,11 @@ function HoursTab({ member }: { member: StaffMember }) {
 
   return (
     <Card>
-      <div className="border-b border-slate-100 px-5 py-4">
-        <h3 className="text-sm font-semibold text-slate-900">
+      <div className="border-b border-border px-5 py-4">
+        <h3 className="text-sm font-semibold text-foreground">
           Horario semanal
         </h3>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-subtle-foreground">
           Franjas en la zona horaria del negocio. Podés cargar varias por día.
         </p>
       </div>
@@ -586,7 +586,7 @@ function HoursTab({ member }: { member: StaffMember }) {
         ) : null}
 
         {hoursQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-sm text-subtle-foreground">
             <Spinner className="h-4 w-4" />
             Cargando horario…
           </div>
@@ -606,10 +606,10 @@ function HoursTab({ member }: { member: StaffMember }) {
               return (
                 <div
                   key={day.value}
-                  className="rounded-xl border border-slate-200 p-3"
+                  className="rounded-xl border border-border p-3"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-slate-900">
+                    <span className="text-sm font-medium text-foreground">
                       {day.label}
                     </span>
                     <Button
@@ -624,7 +624,7 @@ function HoursTab({ member }: { member: StaffMember }) {
                   </div>
 
                   {ranges.length === 0 ? (
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-subtle-foreground">
                       Sin atención este día.
                     </p>
                   ) : (
@@ -648,7 +648,7 @@ function HoursTab({ member }: { member: StaffMember }) {
                             className="h-9 w-32"
                             aria-label={`Inicio ${day.label}`}
                           />
-                          <span className="text-sm text-slate-400">a</span>
+                          <span className="text-sm text-subtle-foreground">a</span>
                           <Input
                             type="time"
                             value={range.endTime}
@@ -666,7 +666,7 @@ function HoursTab({ member }: { member: StaffMember }) {
                           <button
                             type="button"
                             onClick={() => removeRange(day.value, index)}
-                            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                            className="rounded-lg p-1.5 text-subtle-foreground transition hover:bg-error/10 hover:text-error"
                             aria-label={`Quitar franja de ${day.label}`}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -737,10 +737,10 @@ function TimeBlocksTab({
 
   return (
     <Card>
-      <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+      <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Bloqueos</h3>
-          <p className="text-xs text-slate-500">
+          <h3 className="text-sm font-semibold text-foreground">Bloqueos</h3>
+          <p className="text-xs text-subtle-foreground">
             Vacaciones, descansos o compromisos fuera del sistema.
           </p>
         </div>
@@ -761,7 +761,7 @@ function TimeBlocksTab({
         ) : null}
 
         {blocksQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-sm text-subtle-foreground">
             <Spinner className="h-4 w-4" />
             Cargando bloqueos…
           </div>
@@ -774,11 +774,11 @@ function TimeBlocksTab({
             }
           />
         ) : blocks.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500">
+          <p className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-sm text-subtle-foreground">
             No hay bloqueos cargados.
           </p>
         ) : (
-          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+          <ul className="divide-y divide-border rounded-xl border border-border">
             {blocks.map((block) => {
               const label = formatDateTimeInZone(block.startsAt, timezone);
 
@@ -788,10 +788,10 @@ function TimeBlocksTab({
                   className="flex items-start justify-between gap-3 px-4 py-3"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-foreground">
                       {label}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-subtle-foreground">
                       Hasta {formatDateTimeInZone(block.endsAt, timezone)}
                       {block.reason ? ` · ${block.reason}` : ''}
                     </p>
@@ -799,7 +799,7 @@ function TimeBlocksTab({
                   <button
                     type="button"
                     onClick={() => handleDelete(block.id, label)}
-                    className="rounded-lg p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                    className="rounded-lg p-1.5 text-subtle-foreground transition hover:bg-error/10 hover:text-error"
                     aria-label="Eliminar bloqueo"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -1012,10 +1012,10 @@ function StaffFormModal({
           />
         </Field>
 
-        <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-700">
+        <label className="flex items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-sm text-foreground">
           <input
             type="checkbox"
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-border text-primary focus:ring-accent-soft"
             {...form.register('active')}
           />
           Activo (puede recibir turnos)

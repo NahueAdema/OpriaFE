@@ -115,23 +115,23 @@ export default function CustomerAppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-50 via-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
       <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
         <CustomerHeader />
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Mis turnos
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-subtle-foreground">
               Seguí el estado de tus reservas y cancelá las que no puedas
               asistir.
             </p>
           </div>
           <Link
             href="/cliente"
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition hover:bg-background"
           >
             <Search className="h-4 w-4" />
             Buscar negocio
@@ -157,7 +157,7 @@ export default function CustomerAppointmentsPage() {
         ) : null}
 
         {loading ? (
-          <Card className="mt-6 flex items-center justify-center gap-3 p-10 text-sm text-slate-500">
+          <Card className="mt-6 flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
             <Spinner />
             Cargando tus turnos…
           </Card>
@@ -172,7 +172,7 @@ export default function CustomerAppointmentsPage() {
               action={
                 <Link
                   href="/cliente"
-                  className="inline-flex h-10 items-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500"
+                  className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover"
                 >
                   <Search className="h-4 w-4" />
                   Buscar un negocio
@@ -184,7 +184,7 @@ export default function CustomerAppointmentsPage() {
 
         {!loading && groups.upcoming.length > 0 ? (
           <section className="mt-8 space-y-3">
-            <h2 className="px-1 text-xs font-medium tracking-wide text-slate-400 uppercase">
+            <h2 className="px-1 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
               Próximos
             </h2>
             {groups.upcoming.map((appointment) => (
@@ -203,7 +203,7 @@ export default function CustomerAppointmentsPage() {
 
         {!loading && groups.history.length > 0 ? (
           <section className="mt-8 space-y-3">
-            <h2 className="px-1 text-xs font-medium tracking-wide text-slate-400 uppercase">
+            <h2 className="px-1 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
               Historial
             </h2>
             {groups.history.map((appointment) => (
@@ -252,10 +252,10 @@ export default function CustomerAppointmentsPage() {
         }
       >
         {toCancel ? (
-          <div className="space-y-3 text-sm text-slate-600">
+          <div className="space-y-3 text-sm text-muted-foreground">
             <p>
               Vas a cancelar el turno del{' '}
-              <span className="font-medium text-slate-900">
+              <span className="font-medium text-foreground">
                 {formatDateKeyLong(
                   dateKeyInZone(
                     toCancel.startsAt,
@@ -264,7 +264,7 @@ export default function CustomerAppointmentsPage() {
                 )}
               </span>{' '}
               a las{' '}
-              <span className="font-medium text-slate-900">
+              <span className="font-medium text-foreground">
                 {formatTimeInZone(
                   toCancel.startsAt,
                   toCancel.business.timezone,
@@ -272,7 +272,7 @@ export default function CustomerAppointmentsPage() {
               </span>
               .
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-subtle-foreground">
               El horario se libera para otra persona. Esta acción no se puede
               deshacer.
             </p>
@@ -308,9 +308,9 @@ function AppointmentCard({
     appointment.status === 'pending' || appointment.status === 'confirmed';
 
   return (
-    <Card className={cn('overflow-hidden', muted && 'bg-white/70')}>
+    <Card className={cn('overflow-hidden', muted && 'bg-surface/70')}>
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-indigo-50 text-indigo-600">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-accent-soft text-primary">
           {business.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -326,11 +326,11 @@ function AppointmentCard({
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-slate-900">
+              <p className="truncate text-sm font-semibold text-foreground">
                 {business.name}
               </p>
               {business.city || business.address ? (
-                <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-slate-500">
+                <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-subtle-foreground">
                   <MapPin className="h-3.5 w-3.5" />
                   {[business.city, business.address]
                     .filter(Boolean)
@@ -343,11 +343,11 @@ function AppointmentCard({
             </Badge>
           </div>
 
-          <p className="text-sm font-medium text-slate-900">
+          <p className="text-sm font-medium text-foreground">
             {appointment.serviceName}
           </p>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-subtle-foreground">
             <span className="inline-flex items-center gap-1">
               <CalendarCheck className="h-3.5 w-3.5" />
               {dateLabel}
@@ -362,7 +362,7 @@ function AppointmentCard({
           </div>
 
           {appointment.notes ? (
-            <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
+            <p className="rounded-lg bg-background px-3 py-2 text-xs text-muted-foreground">
               {appointment.notes}
             </p>
           ) : null}
@@ -380,7 +380,7 @@ function AppointmentCard({
             ) : null}
 
             {isActive && !appointment.canCancel ? (
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-subtle-foreground">
                 {appointment.cancellationHours > 0
                   ? `Para cancelar, avisale al negocio con ${appointment.cancellationHours} h de anticipación.`
                   : 'Ya no se puede cancelar online. Contactá al negocio.'}
@@ -389,7 +389,7 @@ function AppointmentCard({
 
             <Link
               href={`/reservar/${business.slug}`}
-              className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 transition hover:text-indigo-500"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary transition hover:text-primary-hover"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Reservar de nuevo

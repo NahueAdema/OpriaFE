@@ -96,7 +96,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-slate-500">
+      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
         <Spinner />
         Cargando resumen…
       </Card>
@@ -112,14 +112,14 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/agenda"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover"
             >
               <CalendarDays className="h-4 w-4" />
               Abrir agenda
             </Link>
             <Link
               href="/availability"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition hover:bg-background"
             >
               <CalendarClock className="h-4 w-4" />
               Disponibilidad
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                 href={`/reservar/${business.slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition hover:bg-background"
               >
                 <Scissors className="h-4 w-4" />
                 Página pública
@@ -142,22 +142,22 @@ export default function DashboardPage() {
       {pendingTotal > 0 ? (
         <Link
           href="/agenda"
-          className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 transition hover:border-amber-300 hover:bg-amber-100/70"
+          className="flex items-center gap-3 rounded-2xl border border-warning bg-warning/10 px-5 py-4 transition hover:border-warning hover:bg-warning/70"
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-warning/10 text-muted-foreground">
             <Inbox className="h-5 w-5" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold text-amber-900">
+            <span className="block text-sm font-semibold text-foreground">
               {pendingTotal === 1
                 ? '1 solicitud pendiente'
                 : `${pendingTotal} solicitudes pendientes`}
             </span>
-            <span className="block text-xs text-amber-700">
+            <span className="block text-xs text-muted-foreground">
               Confirmá o rechazá los turnos para liberar u ocupar la agenda.
             </span>
           </span>
-          <ArrowRight className="h-4 w-4 shrink-0 text-amber-700" />
+          <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
         </Link>
       ) : null}
 
@@ -200,12 +200,12 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">
+              <h2 className="text-sm font-semibold text-foreground">
                 Puesta en marcha
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-subtle-foreground">
                 Completá estos pasos para empezar a recibir turnos.
               </p>
             </div>
@@ -213,25 +213,25 @@ export default function DashboardPage() {
               {steps.filter((step) => step.done).length}/{steps.length}
             </Badge>
           </div>
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-border">
             {steps.map((step) => (
               <li key={step.label}>
                 <Link
                   href={step.href}
-                  className="flex items-center gap-3 px-5 py-3.5 transition hover:bg-slate-50"
+                  className="flex items-center gap-3 px-5 py-3.5 transition hover:bg-background"
                 >
                   {step.done ? (
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
                   ) : (
-                    <Circle className="h-5 w-5 shrink-0 text-slate-300" />
+                    <Circle className="h-5 w-5 shrink-0 text-subtle-foreground" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-foreground">
                       {step.label}
                     </p>
-                    <p className="text-xs text-slate-500">{step.description}</p>
+                    <p className="text-xs text-subtle-foreground">{step.description}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" />
+                  <ArrowRight className="h-4 w-4 shrink-0 text-subtle-foreground" />
                 </Link>
               </li>
             ))}
@@ -239,11 +239,11 @@ export default function DashboardPage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <div className="border-b border-slate-100 px-5 py-4">
-            <h2 className="text-sm font-semibold text-slate-900">
+          <div className="border-b border-border px-5 py-4">
+            <h2 className="text-sm font-semibold text-foreground">
               Configuración actual
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-subtle-foreground">
               Datos que usa el motor de disponibilidad.
             </p>
           </div>
@@ -270,14 +270,14 @@ export default function DashboardPage() {
               />
             </dl>
           ) : (
-            <p className="px-5 py-4 text-sm text-slate-500">
+            <p className="px-5 py-4 text-sm text-subtle-foreground">
               Todavía no pudimos cargar el negocio.
             </p>
           )}
-          <div className="border-t border-slate-100 px-5 py-3">
+          <div className="border-t border-border px-5 py-3">
             <Link
               href="/business"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-hover"
             >
               Editar configuración
               <ArrowRight className="h-3.5 w-3.5" />
@@ -302,18 +302,18 @@ function StatCard({
 }) {
   return (
     <Card className="p-5">
-      <div className="flex items-center gap-2 text-slate-500">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+      <div className="flex items-center gap-2 text-subtle-foreground">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-primary">
           <Icon className="h-4 w-4" />
         </span>
         <span className="text-xs font-medium tracking-wide uppercase">
           {label}
         </span>
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-900">
+      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
         {value}
       </p>
-      <p className="mt-1 text-xs text-slate-500">{hint}</p>
+      <p className="mt-1 text-xs text-subtle-foreground">{hint}</p>
     </Card>
   );
 }
@@ -321,8 +321,8 @@ function StatCard({
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="max-w-[60%] text-right font-medium break-words text-slate-900">
+      <dt className="text-subtle-foreground">{label}</dt>
+      <dd className="max-w-[60%] text-right font-medium break-words text-foreground">
         {value}
       </dd>
     </div>

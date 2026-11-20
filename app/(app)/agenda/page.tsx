@@ -181,23 +181,23 @@ export default function AgendaPage() {
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Card className="overflow-hidden lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <button
               type="button"
               onClick={() => shiftMonth(-1)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-subtle-foreground transition hover:bg-background hover:text-foreground"
               aria-label="Mes anterior"
               disabled={!monthKey}
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="text-sm font-semibold text-foreground">
               {monthKey ? formatMonthLabel(monthKey) : 'Cargando…'}
             </p>
             <button
               type="button"
               onClick={() => shiftMonth(1)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-subtle-foreground transition hover:bg-background hover:text-foreground"
               aria-label="Mes siguiente"
               disabled={!monthKey}
             >
@@ -210,7 +210,7 @@ export default function AgendaPage() {
               {WEEKDAY_HEADERS.map((label) => (
                 <span
                   key={label}
-                  className="pb-1 text-[11px] font-medium tracking-wide text-slate-400 uppercase"
+                  className="pb-1 text-[11px] font-medium tracking-wide text-subtle-foreground uppercase"
                 >
                   {label}
                 </span>
@@ -220,7 +220,7 @@ export default function AgendaPage() {
                 ? Array.from({ length: 35 }, (_, index) => (
                     <span
                       key={`skeleton-${index}`}
-                      className="h-11 animate-pulse rounded-lg bg-slate-100"
+                      className="h-11 animate-pulse rounded-lg bg-accent-soft"
                     />
                   ))
                 : monthCells.map((dateKey, index) => {
@@ -246,10 +246,10 @@ export default function AgendaPage() {
                         className={cn(
                           'flex h-11 flex-col items-center justify-center rounded-lg text-sm transition',
                           isSelected
-                            ? 'bg-indigo-600 font-semibold text-white shadow-sm'
-                            : 'text-slate-700 hover:bg-slate-100',
+                            ? 'bg-primary font-semibold text-white shadow-sm'
+                            : 'text-foreground hover:bg-accent-soft',
                           !isSelected && isToday
-                            ? 'ring-1 ring-indigo-200 ring-inset'
+                            ? 'ring-1 ring-accent-soft ring-inset'
                             : '',
                         )}
                       >
@@ -259,7 +259,7 @@ export default function AgendaPage() {
                             <span
                               className={cn(
                                 'h-1.5 w-1.5 rounded-full',
-                                isSelected ? 'bg-white' : 'bg-amber-400',
+                                isSelected ? 'bg-surface' : 'bg-warning',
                               )}
                             />
                           ) : null}
@@ -267,7 +267,7 @@ export default function AgendaPage() {
                             <span
                               className={cn(
                                 'h-1.5 w-1.5 rounded-full',
-                                isSelected ? 'bg-white/70' : 'bg-emerald-400',
+                                isSelected ? 'bg-surface/70' : 'bg-success',
                               )}
                             />
                           ) : null}
@@ -278,27 +278,27 @@ export default function AgendaPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 px-4 py-2.5 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 border-t border-border px-4 py-2.5 text-xs text-subtle-foreground">
             <span className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-warning" />
               Pendiente
             </span>
             <span className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-success" />
               Confirmado
             </span>
           </div>
         </Card>
 
         <Card className="overflow-hidden lg:col-span-3">
-          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 capitalize">
+              <h2 className="text-sm font-semibold text-foreground capitalize">
                 {selectedDate
                   ? formatDateKeyLong(selectedDate)
                   : 'Elegí un día'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-subtle-foreground">
                 {dayAppointments.length} turno
                 {dayAppointments.length === 1 ? '' : 's'} en el día
               </p>
@@ -317,7 +317,7 @@ export default function AgendaPage() {
               />
             </div>
           ) : (
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-border">
               {dayAppointments.map((appointment) => (
                 <li key={appointment.id}>
                   <button
@@ -326,19 +326,19 @@ export default function AgendaPage() {
                       setSelected(appointment);
                       setReason('');
                     }}
-                    className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-slate-50"
+                    className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-background"
                   >
                     <span className="flex w-14 shrink-0 flex-col items-start">
-                      <span className="text-sm font-semibold text-slate-900">
+                      <span className="text-sm font-semibold text-foreground">
                         {formatTimeInZone(appointment.startsAt, timezone)}
                       </span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-subtle-foreground">
                         {appointment.durationMinutes} min
                       </span>
                     </span>
                     <span className="min-w-0 flex-1 space-y-1">
                       <span className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-medium text-slate-900">
+                        <span className="truncate text-sm font-medium text-foreground">
                           {appointment.customerName}
                         </span>
                         <Badge
@@ -347,7 +347,7 @@ export default function AgendaPage() {
                           {APPOINTMENT_STATUS_LABELS[appointment.status]}
                         </Badge>
                       </span>
-                      <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                      <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-subtle-foreground">
                         <span className="flex items-center gap-1">
                           <Scissors className="h-3.5 w-3.5" />
                           {appointment.serviceName}
@@ -359,7 +359,7 @@ export default function AgendaPage() {
                         <span>$ {formatMoney(appointment.priceCents)}</span>
                       </span>
                     </span>
-                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-slate-400" />
+                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-subtle-foreground" />
                   </button>
                 </li>
               ))}
@@ -482,7 +482,7 @@ function AppointmentModal({
             value={
               <a
                 href={`tel:${appointment.customerPhone}`}
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="font-medium text-primary hover:text-primary-hover"
               >
                 {appointment.customerPhone}
               </a>
@@ -495,7 +495,7 @@ function AppointmentModal({
               value={
                 <a
                   href={`mailto:${appointment.customerEmail}`}
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                  className="font-medium text-primary hover:text-primary-hover"
                 >
                   {appointment.customerEmail}
                 </a>
@@ -510,7 +510,7 @@ function AppointmentModal({
         </dl>
 
         {appointment.depositType !== 'none' ? (
-          <div className="rounded-xl bg-indigo-50 px-3 py-2 text-xs text-indigo-700">
+          <div className="rounded-xl bg-accent-soft px-3 py-2 text-xs text-primary-dark">
             Seña:{' '}
             {appointment.depositType === 'fixed'
               ? `$ ${formatMoney(appointment.depositValue)}`
@@ -523,14 +523,14 @@ function AppointmentModal({
         ) : null}
 
         {appointment.notes ? (
-          <div className="rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-600">
-            <p className="font-medium text-slate-700">Comentarios</p>
+          <div className="rounded-xl bg-background px-3 py-2 text-xs text-muted-foreground">
+            <p className="font-medium text-foreground">Comentarios</p>
             <p className="mt-1 whitespace-pre-line">{appointment.notes}</p>
           </div>
         ) : null}
 
         {appointment.statusReason ? (
-          <div className="rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          <div className="rounded-xl bg-error/10 px-3 py-2 text-xs text-error">
             Motivo: {appointment.statusReason}
           </div>
         ) : null}
@@ -542,7 +542,7 @@ function AppointmentModal({
           <div className="space-y-1.5">
             <label
               htmlFor="agenda-reason"
-              className="block text-xs font-medium text-slate-600"
+              className="block text-xs font-medium text-muted-foreground"
             >
               Motivo (opcional)
             </label>
@@ -573,11 +573,11 @@ function Row({
 }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <dt className="flex items-center gap-1.5 text-slate-500">
+      <dt className="flex items-center gap-1.5 text-subtle-foreground">
         <Icon className="h-3.5 w-3.5" />
         {label}
       </dt>
-      <dd className="max-w-[65%] text-right font-medium break-words text-slate-900">
+      <dd className="max-w-[65%] text-right font-medium break-words text-foreground">
         {value}
       </dd>
     </div>

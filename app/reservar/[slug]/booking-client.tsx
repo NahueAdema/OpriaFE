@@ -258,7 +258,7 @@ export function BookingClient({ slug }: { slug: string }) {
 
   if (businessQuery.isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-sm text-slate-500">
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-subtle-foreground">
         <Spinner className="mr-3" />
         Cargando el negocio…
       </div>
@@ -267,21 +267,21 @@ export function BookingClient({ slug }: { slug: string }) {
 
   if (businessQuery.error || !business) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <Card className="w-full max-w-md p-8 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 text-rose-600">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-error/10 text-error">
             <CalendarDays className="h-6 w-6" />
           </div>
-          <h1 className="mt-4 text-lg font-semibold text-slate-900">
+          <h1 className="mt-4 text-lg font-semibold text-foreground">
             No encontramos este negocio
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-subtle-foreground">
             Puede que el link esté mal escrito o que el negocio ya no esté
             disponible.
           </p>
           <Link
             href="/reservar"
-            className="mt-5 inline-flex h-10 items-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-medium text-white transition hover:bg-indigo-500"
+            className="mt-5 inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white transition hover:bg-primary-hover"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver al buscador
@@ -296,26 +296,26 @@ export function BookingClient({ slug }: { slug: string }) {
     const hasContact = Boolean(business.contactPhone || business.contactEmail);
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-slate-50 to-white px-4 py-10">
+      <div className="min-h-screen bg-gradient-to-b from-success via-background to-white px-4 py-10">
         <div className="mx-auto w-full max-w-xl space-y-5">
           <Link
             href="/reservar"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-subtle-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Buscar otro negocio
           </Link>
 
           <Card className="overflow-hidden">
-            <div className="flex flex-col items-center gap-3 border-b border-slate-100 bg-white px-6 py-8 text-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+            <div className="flex flex-col items-center gap-3 border-b border-border bg-surface px-6 py-8 text-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-success/10 text-success">
                 <CheckCircle2 className="h-7 w-7" />
               </span>
               <div className="space-y-1">
-                <h1 className="text-xl font-semibold text-slate-900">
+                <h1 className="text-xl font-semibold text-foreground">
                   ¡Solicitud enviada!
                 </h1>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-subtle-foreground">
                   Tu turno quedó pendiente de confirmación. El negocio se va a
                   comunicar al teléfono que dejaste.
                 </p>
@@ -344,11 +344,11 @@ export function BookingClient({ slug }: { slug: string }) {
               <SummaryRow label="Seña" value={depositLabel(created)} />
             </dl>
 
-            <div className="border-t border-slate-100 px-6 py-4">
-              <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">
+            <div className="border-t border-border px-6 py-4">
+              <p className="text-xs font-medium tracking-wide text-subtle-foreground uppercase">
                 Qué sigue
               </p>
-              <ol className="mt-2 list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-slate-600">
+              <ol className="mt-2 list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-muted-foreground">
                 <li>El negocio revisa la solicitud y confirma el turno.</li>
                 <li>Si necesita algo, te contacta al teléfono que dejaste.</li>
                 <li>
@@ -360,11 +360,11 @@ export function BookingClient({ slug }: { slug: string }) {
             </div>
 
             {hasContact ? (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 px-6 py-3 text-xs text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border px-6 py-3 text-xs text-subtle-foreground">
                 {business.contactPhone ? (
                   <a
                     href={`tel:${business.contactPhone}`}
-                    className="inline-flex items-center gap-1.5 transition hover:text-slate-900"
+                    className="inline-flex items-center gap-1.5 transition hover:text-foreground"
                   >
                     <Phone className="h-3.5 w-3.5" />
                     {business.contactPhone}
@@ -373,7 +373,7 @@ export function BookingClient({ slug }: { slug: string }) {
                 {business.contactEmail ? (
                   <a
                     href={`mailto:${business.contactEmail}`}
-                    className="inline-flex items-center gap-1.5 transition hover:text-slate-900"
+                    className="inline-flex items-center gap-1.5 transition hover:text-foreground"
                   >
                     <Mail className="h-3.5 w-3.5" />
                     {business.contactEmail}
@@ -382,7 +382,7 @@ export function BookingClient({ slug }: { slug: string }) {
               </div>
             ) : null}
 
-            <div className="flex flex-col gap-2 border-t border-slate-100 px-6 py-4 sm:flex-row">
+            <div className="flex flex-col gap-2 border-t border-border px-6 py-4 sm:flex-row">
               <Button type="button" onClick={startOver} className="sm:flex-1">
                 Hacer otra reserva
               </Button>
@@ -408,17 +408,17 @@ export function BookingClient({ slug }: { slug: string }) {
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 border-t border-slate-100 px-6 py-3 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 border-t border-border px-6 py-3 text-center">
               <Link
                 href={`/reservar/${business.slug}`}
-                className="text-xs font-medium text-indigo-600 transition hover:text-indigo-500"
+                className="text-xs font-medium text-primary transition hover:text-primary-hover"
               >
                 Ver el negocio
               </Link>
               {customer ? (
                 <Link
                   href="/cliente/turnos"
-                  className="text-xs font-medium text-indigo-600 transition hover:text-indigo-500"
+                  className="text-xs font-medium text-primary transition hover:text-primary-hover"
                 >
                   Ver mis turnos
                 </Link>
@@ -433,11 +433,11 @@ export function BookingClient({ slug }: { slug: string }) {
   const canSubmit = Boolean(service && selectedDate && selectedSlot);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
       <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-4">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-surface text-primary shadow-sm ring-1 ring-border">
               {business.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -450,10 +450,10 @@ export function BookingClient({ slug }: { slug: string }) {
               )}
             </span>
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                 {business.name}
               </h1>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-subtle-foreground">
                 {business.address ? (
                   <span className="flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5" />
@@ -467,7 +467,7 @@ export function BookingClient({ slug }: { slug: string }) {
                 {business.contactPhone ? (
                   <a
                     href={`tel:${business.contactPhone}`}
-                    className="flex items-center gap-1 transition hover:text-slate-900"
+                    className="flex items-center gap-1 transition hover:text-foreground"
                   >
                     <Phone className="h-3.5 w-3.5" />
                     {business.contactPhone}
@@ -476,7 +476,7 @@ export function BookingClient({ slug }: { slug: string }) {
                 {business.contactEmail ? (
                   <a
                     href={`mailto:${business.contactEmail}`}
-                    className="flex items-center gap-1 transition hover:text-slate-900"
+                    className="flex items-center gap-1 transition hover:text-foreground"
                   >
                     <Mail className="h-3.5 w-3.5" />
                     {business.contactEmail}
@@ -487,7 +487,7 @@ export function BookingClient({ slug }: { slug: string }) {
           </div>
           <Link
             href="/reservar"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-subtle-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Buscar otro negocio
@@ -519,25 +519,25 @@ export function BookingClient({ slug }: { slug: string }) {
                         className={cn(
                           'flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition',
                           active
-                            ? 'border-indigo-300 bg-indigo-50/70 ring-2 ring-indigo-100'
-                            : 'border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50',
+                            ? 'border-primary bg-accent-soft/70 ring-2 ring-accent-soft'
+                            : 'border-border bg-surface hover:border-accent-soft hover:bg-background',
                         )}
                       >
                         <span
                           className={cn(
                             'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
                             active
-                              ? 'bg-indigo-600 text-white'
-                              : 'bg-slate-100 text-slate-500',
+                              ? 'bg-primary text-white'
+                              : 'bg-accent-soft text-subtle-foreground',
                           )}
                         >
                           <Scissors className="h-4 w-4" />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold text-slate-900">
+                          <span className="block truncate text-sm font-semibold text-foreground">
                             {item.name}
                           </span>
-                          <span className="mt-0.5 block text-xs text-slate-500">
+                          <span className="mt-0.5 block text-xs text-subtle-foreground">
                             {item.durationMinutes} min · ${' '}
                             {formatMoney(item.priceCents)}
                           </span>
@@ -560,12 +560,12 @@ export function BookingClient({ slug }: { slug: string }) {
                       onClick={() =>
                         setMonthKey(addMonthsToMonthKey(monthKey, -1))
                       }
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-subtle-foreground transition hover:bg-background hover:text-foreground"
                       aria-label="Mes anterior"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-foreground">
                       {monthKey ? formatMonthLabel(monthKey) : ''}
                     </p>
                     <button
@@ -573,7 +573,7 @@ export function BookingClient({ slug }: { slug: string }) {
                       onClick={() =>
                         setMonthKey(addMonthsToMonthKey(monthKey, 1))
                       }
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-subtle-foreground transition hover:bg-background hover:text-foreground"
                       aria-label="Mes siguiente"
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -584,7 +584,7 @@ export function BookingClient({ slug }: { slug: string }) {
                     {WEEKDAY_HEADERS.map((label) => (
                       <span
                         key={label}
-                        className="pb-1 text-[11px] font-medium tracking-wide text-slate-400 uppercase"
+                        className="pb-1 text-[11px] font-medium tracking-wide text-subtle-foreground uppercase"
                       >
                         {label}
                       </span>
@@ -594,7 +594,7 @@ export function BookingClient({ slug }: { slug: string }) {
                       ? Array.from({ length: 35 }, (_, index) => (
                           <span
                             key={`skeleton-${index}`}
-                            className="h-9 animate-pulse rounded-lg bg-slate-100"
+                            className="h-9 animate-pulse rounded-lg bg-accent-soft"
                           />
                         ))
                       : monthCells.map((dateKey, index) => {
@@ -624,15 +624,15 @@ export function BookingClient({ slug }: { slug: string }) {
                               className={cn(
                                 'flex h-9 flex-col items-center justify-center rounded-lg text-sm transition',
                                 isSelected
-                                  ? 'bg-indigo-600 font-semibold text-white shadow-sm'
+                                  ? 'bg-primary font-semibold text-white shadow-sm'
                                   : disabled
-                                    ? 'cursor-not-allowed text-slate-300'
-                                    : 'bg-indigo-50/60 font-medium text-indigo-700 hover:bg-indigo-100',
+                                    ? 'cursor-not-allowed text-subtle-foreground'
+                                    : 'bg-accent-soft/60 font-medium text-primary-dark hover:bg-accent-soft',
                               )}
                             >
                               {Number(dateKey.slice(8, 10))}
                               {available && !isSelected ? (
-                                <span className="mt-0.5 h-1 w-1 rounded-full bg-indigo-400" />
+                                <span className="mt-0.5 h-1 w-1 rounded-full bg-primary-hover" />
                               ) : null}
                             </button>
                           );
@@ -651,7 +651,7 @@ export function BookingClient({ slug }: { slug: string }) {
                     </div>
                   ) : null}
 
-                  <p className="mt-3 text-xs text-slate-400">
+                  <p className="mt-3 text-xs text-subtle-foreground">
                     Los días en gris no tienen horarios disponibles.
                   </p>
                 </div>
@@ -661,21 +661,21 @@ export function BookingClient({ slug }: { slug: string }) {
                 <StepHeader step={3} title="Elegí el horario" />
                 <div className="px-5 py-4">
                   {!selectedDate ? (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-subtle-foreground">
                       Primero elegí un día en el calendario.
                     </p>
                   ) : availabilityQuery.isLoading ? (
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <div className="flex items-center gap-2 text-sm text-subtle-foreground">
                       <Spinner className="h-4 w-4" />
                       Buscando horarios…
                     </div>
                   ) : (availabilityQuery.data?.slots.length ?? 0) === 0 ? (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-subtle-foreground">
                       No quedan horarios para este día. Probá con otra fecha.
                     </p>
                   ) : (
                     <>
-                      <p className="mb-3 text-xs font-medium tracking-wide text-slate-400 uppercase">
+                      <p className="mb-3 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
                         {formatDateKeyShort(selectedDate)}
                       </p>
                       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
@@ -690,8 +690,8 @@ export function BookingClient({ slug }: { slug: string }) {
                               className={cn(
                                 'rounded-xl border px-2 py-2 text-sm font-medium transition',
                                 active
-                                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                                  : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-indigo-50',
+                                  ? 'border-primary bg-primary text-white shadow-sm'
+                                  : 'border-border bg-surface text-foreground hover:border-primary hover:bg-accent-soft',
                               )}
                             >
                               {formatTimeInZone(slot.startsAt, timezone)}
@@ -722,7 +722,7 @@ export function BookingClient({ slug }: { slug: string }) {
                 <StepHeader step={4} title="Tus datos" />
                 <div className="space-y-4 px-5 py-4">
                   {customer ? (
-                    <div className="flex items-start gap-2 rounded-xl border border-indigo-100 bg-indigo-50/70 px-3 py-2.5 text-xs text-indigo-700">
+                    <div className="flex items-start gap-2 rounded-xl border border-accent-soft bg-accent-soft/70 px-3 py-2.5 text-xs text-primary-dark">
                       <UserRound className="mt-0.5 h-4 w-4 shrink-0" />
                       <span>
                         Reservás con tu cuenta ({customer.email}). El turno va a
@@ -738,21 +738,21 @@ export function BookingClient({ slug }: { slug: string }) {
                     </div>
                   ) : null}
 
-                  <div className="rounded-xl bg-slate-50 px-3 py-2.5 text-sm">
-                    <p className="flex items-center gap-1.5 font-medium text-slate-900">
-                      <CalendarCheck className="h-4 w-4 text-indigo-600" />
+                  <div className="rounded-xl bg-background px-3 py-2.5 text-sm">
+                    <p className="flex items-center gap-1.5 font-medium text-foreground">
+                      <CalendarCheck className="h-4 w-4 text-primary" />
                       {selectedDate
                         ? formatDateKeyLong(selectedDate)
                         : 'Elegí día y horario'}
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-subtle-foreground">
                       {selectedSlot
                         ? `${formatTimeInZone(selectedSlot, timezone)} · ${service?.name ?? ''}`
                         : 'Todavía no elegiste un horario'}
                     </p>
                     {service ? (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
-                        <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+                      <p className="mt-1 flex items-center gap-1 text-xs text-subtle-foreground">
+                        <Sparkles className="h-3.5 w-3.5 text-primary" />
                         {depositLabel(service)} · ${' '}
                         {formatMoney(service.priceCents)}
                       </p>
@@ -787,7 +787,7 @@ export function BookingClient({ slug }: { slug: string }) {
                         autoComplete="name"
                         placeholder="Ana Pérez"
                         readOnly={Boolean(customer)}
-                        className={customer ? 'bg-slate-50 text-slate-500' : undefined}
+                        className={customer ? 'bg-background text-subtle-foreground' : undefined}
                         {...form.register('customerName')}
                       />
                     </Field>
@@ -802,7 +802,7 @@ export function BookingClient({ slug }: { slug: string }) {
                         autoComplete="tel"
                         placeholder="+54 11 5555 0000"
                         readOnly={Boolean(customer)}
-                        className={customer ? 'bg-slate-50 text-slate-500' : undefined}
+                        className={customer ? 'bg-background text-subtle-foreground' : undefined}
                         {...form.register('customerPhone')}
                       />
                     </Field>
@@ -818,7 +818,7 @@ export function BookingClient({ slug }: { slug: string }) {
                         autoComplete="email"
                         placeholder="ana@email.com"
                         readOnly={Boolean(customer)}
-                        className={customer ? 'bg-slate-50 text-slate-500' : undefined}
+                        className={customer ? 'bg-background text-subtle-foreground' : undefined}
                         {...form.register('customerEmail')}
                       />
                     </Field>
@@ -846,21 +846,21 @@ export function BookingClient({ slug }: { slug: string }) {
                       <ArrowRight className="h-4 w-4" />
                     </Button>
 
-                    <p className="text-center text-xs text-slate-400">
+                    <p className="text-center text-xs text-subtle-foreground">
                       El turno queda pendiente hasta que el negocio lo confirme.
                     </p>
                     {business.cancellationHours > 0 ? (
-                      <p className="text-center text-xs text-slate-400">
+                      <p className="text-center text-xs text-subtle-foreground">
                         Para cancelar, avisá con {business.cancellationHours} h
                         de anticipación.
                       </p>
                     ) : null}
                     {customerStatus === 'anonymous' ? (
-                      <p className="text-center text-xs text-slate-400">
+                      <p className="text-center text-xs text-subtle-foreground">
                         ¿Querés reservar más rápido la próxima vez?{' '}
                         <Link
                           href="/cliente/registro"
-                          className="font-medium text-indigo-600 hover:text-indigo-500"
+                          className="font-medium text-primary hover:text-primary-hover"
                         >
                           Creá tu cuenta
                         </Link>
@@ -880,11 +880,11 @@ export function BookingClient({ slug }: { slug: string }) {
 
 function StepHeader({ step, title }: { step: number; title: string }) {
   return (
-    <div className="flex items-center gap-2 border-b border-slate-100 px-5 py-3">
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600">
+    <div className="flex items-center gap-2 border-b border-border px-5 py-3">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-soft text-xs font-semibold text-primary">
         {step}
       </span>
-      <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
+      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
     </div>
   );
 }
@@ -892,8 +892,8 @@ function StepHeader({ step, title }: { step: number; title: string }) {
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="max-w-[65%] text-right font-medium break-words text-slate-900">
+      <dt className="text-subtle-foreground">{label}</dt>
+      <dd className="max-w-[65%] text-right font-medium break-words text-foreground">
         {value}
       </dd>
     </div>

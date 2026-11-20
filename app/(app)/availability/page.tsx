@@ -172,7 +172,7 @@ export default function AvailabilityPage() {
                 onClick={() =>
                   effectiveDate && setDate(addDaysToKey(effectiveDate, -1))
                 }
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-subtle-foreground shadow-sm transition hover:bg-background hover:text-foreground"
                 aria-label="Día anterior"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -188,7 +188,7 @@ export default function AvailabilityPage() {
                 onClick={() =>
                   effectiveDate && setDate(addDaysToKey(effectiveDate, 1))
                 }
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-subtle-foreground shadow-sm transition hover:bg-background hover:text-foreground"
                 aria-label="Día siguiente"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -207,7 +207,7 @@ export default function AvailabilityPage() {
       ) : null}
 
       {service ? (
-        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           <Badge tone="info">
             <Clock3 className="h-3.5 w-3.5" />
             {service.durationMinutes} min
@@ -217,7 +217,7 @@ export default function AvailabilityPage() {
           </Badge>
           <Badge tone="neutral">{timezone}</Badge>
           {effectiveDate ? (
-            <span className="text-slate-500 capitalize">
+            <span className="text-subtle-foreground capitalize">
               {formatDateKeyLong(effectiveDate)}
             </span>
           ) : null}
@@ -235,7 +235,7 @@ export default function AvailabilityPage() {
       ) : null}
 
       {availabilityQuery.isFetching ? (
-        <Card className="flex items-center justify-center gap-3 p-8 text-sm text-slate-500">
+        <Card className="flex items-center justify-center gap-3 p-8 text-sm text-subtle-foreground">
           <Spinner />
           Calculando disponibilidad…
         </Card>
@@ -248,7 +248,7 @@ export default function AvailabilityPage() {
           />
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-sm text-subtle-foreground">
               <CalendarClock className="h-4 w-4" />
               {totalSlots} horarios disponibles
             </div>
@@ -262,11 +262,11 @@ export default function AvailabilityPage() {
 
               return (
                 <Card key={period} className="overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
-                    <h2 className="text-sm font-semibold text-slate-900">
+                  <div className="flex items-center justify-between border-b border-border px-5 py-3">
+                    <h2 className="text-sm font-semibold text-foreground">
                       {period}
                     </h2>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-subtle-foreground">
                       {slots.length} horarios
                     </span>
                   </div>
@@ -279,17 +279,17 @@ export default function AvailabilityPage() {
                       return (
                         <div
                           key={slot.startsAt}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm"
+                          className="rounded-xl border border-border bg-surface px-3 py-2.5 shadow-sm"
                         >
                           <div className="flex items-baseline justify-between gap-2">
-                            <p className="text-sm font-semibold text-slate-900">
+                            <p className="text-sm font-semibold text-foreground">
                               {formatTimeInZone(slot.startsAt, timezone)}
                             </p>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-subtle-foreground">
                               hasta {formatTimeInZone(slot.endsAt, timezone)}
                             </p>
                           </div>
-                          <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+                          <p className="mt-1 flex items-center gap-1 text-xs text-subtle-foreground">
                             {staffId ? (
                               <>
                                 <UserRound className="h-3.5 w-3.5" />

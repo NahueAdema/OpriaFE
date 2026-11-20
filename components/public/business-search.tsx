@@ -59,7 +59,7 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
       >
         <div className="flex flex-col gap-2 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-subtle-foreground" />
             <Input
               value={term}
               onChange={(event) => setTerm(event.target.value)}
@@ -102,20 +102,20 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
 
       <div className="mx-auto mt-8 w-full max-w-3xl space-y-3">
         {!hasCriteria ? (
-          <Card className="p-6 text-center text-sm text-slate-500">
+          <Card className="p-6 text-center text-sm text-subtle-foreground">
             Buscá por nombre o elegí una ciudad o un servicio para ver negocios.
           </Card>
         ) : null}
 
         {searchQuery.isFetching ? (
-          <Card className="flex items-center justify-center gap-3 p-6 text-sm text-slate-500">
+          <Card className="flex items-center justify-center gap-3 p-6 text-sm text-subtle-foreground">
             <Spinner />
             Buscando negocios…
           </Card>
         ) : null}
 
         {searchQuery.error ? (
-          <Card className="p-4 text-sm text-rose-600">
+          <Card className="p-4 text-sm text-error">
             {searchQuery.error instanceof Error
               ? searchQuery.error.message
               : 'No pudimos buscar negocios.'}
@@ -123,14 +123,14 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
         ) : null}
 
         {hasCriteria && !searchQuery.isFetching && results.length === 0 ? (
-          <Card className="p-6 text-center text-sm text-slate-500">
+          <Card className="p-6 text-center text-sm text-subtle-foreground">
             No encontramos negocios con esos filtros. Probá con otra ciudad,
             otro servicio u otro nombre.
           </Card>
         ) : null}
 
         {hasCriteria && !searchQuery.isFetching && results.length > 0 ? (
-          <p className="px-1 text-xs font-medium tracking-wide text-slate-400 uppercase">
+          <p className="px-1 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
             {results.length} {results.length === 1 ? 'negocio' : 'negocios'}
           </p>
         ) : null}
@@ -139,9 +139,9 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
           <Link
             key={business.slug}
             href={`/reservar/${business.slug}`}
-            className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:border-indigo-200 hover:shadow-md"
+            className="flex items-center gap-4 rounded-2xl border border-border bg-surface px-5 py-4 shadow-sm transition hover:border-accent-soft hover:shadow-md"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-indigo-50 text-indigo-600">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-accent-soft text-primary">
               {business.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -154,10 +154,10 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
               )}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-slate-900">
+              <p className="truncate text-sm font-semibold text-foreground">
                 {business.name}
               </p>
-              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-slate-500">
+              <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-subtle-foreground">
                 {business.city || business.address ? (
                   <>
                     <MapPin className="h-3.5 w-3.5" />
@@ -170,7 +170,7 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
                 )}
               </p>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-subtle-foreground" />
           </Link>
         ))}
       </div>

@@ -82,18 +82,18 @@ export function CustomerAuthClient({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-50 via-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-10 sm:px-6">
         <div className="mb-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-lg font-bold text-white shadow-lg shadow-indigo-200">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-white shadow-lg shadow-primary">
               O
             </span>
-            <span className="text-lg font-semibold text-slate-900">Opria</span>
+            <span className="text-lg font-semibold text-foreground">Opria</span>
           </Link>
           <Link
             href="/cliente"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-subtle-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver
@@ -101,28 +101,28 @@ export function CustomerAuthClient({
         </div>
 
         <div className="space-y-1">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-violet-700 shadow-sm ring-1 ring-violet-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs font-medium text-ai shadow-sm ring-1 ring-accent-soft">
             <Sparkles className="h-3.5 w-3.5" />
             Espacio de clientes
           </span>
-          <h1 className="pt-3 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="pt-3 text-2xl font-semibold tracking-tight text-foreground">
             {mode === 'login' ? 'Ingresá a tu cuenta' : 'Creá tu cuenta'}
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-subtle-foreground">
             {mode === 'login'
               ? 'Mirá tus turnos y reservá más rápido.'
               : 'Guardá tus datos y seguí tus turnos en un solo lugar.'}
           </p>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+        <div className="mt-5 grid grid-cols-2 gap-1 rounded-xl border border-border bg-surface p-1 shadow-sm">
           <button
             type="button"
             onClick={() => switchMode('login')}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
               mode === 'login'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-muted-foreground hover:bg-background'
             }`}
           >
             Iniciar sesión
@@ -132,8 +132,8 @@ export function CustomerAuthClient({
             onClick={() => switchMode('register')}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
               mode === 'register'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-muted-foreground hover:bg-background'
             }`}
           >
             Crear cuenta
@@ -149,7 +149,7 @@ export function CustomerAuthClient({
         {mode === 'login' ? (
           <form
             onSubmit={loginForm.handleSubmit(onLogin)}
-            className="mt-4 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="mt-4 space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
           >
             <Field
               label="Email"
@@ -191,7 +191,7 @@ export function CustomerAuthClient({
         ) : (
           <form
             onSubmit={registerForm.handleSubmit(onRegister)}
-            className="mt-4 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="mt-4 space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
           >
             <Field
               label="Nombre y apellido"
@@ -261,20 +261,20 @@ export function CustomerAuthClient({
           </form>
         )}
 
-        <div className="mt-4 flex items-start gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-500">
-          <CalendarCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-500" />
+        <div className="mt-4 flex items-start gap-2 rounded-xl border border-border bg-surface px-3 py-2.5 text-xs text-subtle-foreground">
+          <CalendarCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-hover" />
           <span>
             También podés reservar como invitado desde{' '}
             <Link
               href="/cliente"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-primary hover:text-primary-hover"
             >
               el buscador de negocios
             </Link>
             . ¿Sos un negocio?{' '}
             <Link
               href="/login"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-primary hover:text-primary-hover"
             >
               Ingresá a tu panel
             </Link>

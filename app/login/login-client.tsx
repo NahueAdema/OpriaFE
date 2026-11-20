@@ -133,31 +133,31 @@ export function LoginClient({
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <aside className="relative hidden w-[46%] flex-col justify-between overflow-hidden bg-slate-950 p-10 text-white lg:flex">
-        <div className="absolute top-24 -left-24 h-72 w-72 rounded-full bg-indigo-600/30 blur-3xl" />
-        <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl" />
+    <div className="flex min-h-screen bg-background">
+      <aside className="relative hidden w-[46%] flex-col justify-between overflow-hidden bg-primary-dark p-10 text-white lg:flex">
+        <div className="absolute top-24 -left-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
+        <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
 
         <div className="relative flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-xl font-bold shadow-lg shadow-indigo-950/40">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-xl font-bold shadow-lg shadow-primary/40">
             O
           </span>
           <div>
             <p className="text-lg font-semibold">Opria</p>
-            <p className="text-xs text-slate-400">Turnos con IA</p>
+            <p className="text-xs text-subtle-foreground">Turnos con IA</p>
           </div>
         </div>
 
         <div className="relative space-y-8">
           <div className="space-y-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-              <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-surface/10 bg-surface/5 px-3 py-1 text-xs text-subtle-foreground">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
               Configuración del negocio
             </span>
             <h1 className="max-w-md text-4xl leading-tight font-semibold tracking-tight">
               Todo lo que tu negocio necesita para recibir turnos.
             </h1>
-            <p className="max-w-md text-sm leading-6 text-slate-400">
+            <p className="max-w-md text-sm leading-6 text-subtle-foreground">
               Centralizá servicios, equipo, horarios y bloqueos. La
               disponibilidad se calcula sola, respetando tu timezone.
             </p>
@@ -166,12 +166,12 @@ export function LoginClient({
           <div className="space-y-4">
             {highlights.map((item) => (
               <div key={item.title} className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                  <item.icon className="h-4 w-4 text-indigo-300" />
+                <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl border border-surface/10 bg-surface/5">
+                  <item.icon className="h-4 w-4 text-primary" />
                 </span>
                 <div>
                   <p className="text-sm font-medium text-white">{item.title}</p>
-                  <p className="text-xs leading-5 text-slate-400">
+                  <p className="text-xs leading-5 text-subtle-foreground">
                     {item.description}
                   </p>
                 </div>
@@ -180,7 +180,7 @@ export function LoginClient({
           </div>
         </div>
 
-        <p className="relative text-xs text-slate-500">
+        <p className="relative text-xs text-subtle-foreground">
           Opria. Hecho para negocios de servicios.
         </p>
       </aside>
@@ -188,8 +188,8 @@ export function LoginClient({
       <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 lg:hidden">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-base font-bold text-white">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-base font-bold text-white">
                 O
               </span>
               Opria
@@ -197,26 +197,26 @@ export function LoginClient({
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
               {mode === 'login'
                 ? 'Ingresá a tu panel de negocio'
                 : 'Creá tu negocio'}
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-subtle-foreground">
               {mode === 'login'
                 ? 'Gestioná servicios, equipo, agenda y disponibilidad.'
                 : 'En un minuto tenés tu cuenta de dueño lista.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+          <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-surface p-1 shadow-sm">
             <button
               type="button"
               onClick={() => switchMode('login')}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                 mode === 'login'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-muted-foreground hover:bg-background'
               }`}
             >
               Iniciar sesión
@@ -226,8 +226,8 @@ export function LoginClient({
               onClick={() => switchMode('register')}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                 mode === 'register'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-muted-foreground hover:bg-background'
               }`}
             >
               Crear cuenta
@@ -235,7 +235,7 @@ export function LoginClient({
           </div>
 
           {error ? (
-            <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <div className="rounded-xl border border-error bg-error/10 px-3 py-2 text-sm text-error">
               {error}
             </div>
           ) : null}
@@ -243,7 +243,7 @@ export function LoginClient({
           {mode === 'login' ? (
             <form
               onSubmit={loginForm.handleSubmit(onLogin)}
-              className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
             >
               <Field
                 label="Email"
@@ -298,7 +298,7 @@ export function LoginClient({
           ) : (
             <form
               onSubmit={registerForm.handleSubmit(onRegister)}
-              className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
             >
               <Field
                 label="Nombre del negocio"
@@ -390,16 +390,16 @@ export function LoginClient({
             </form>
           )}
 
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <Check className="h-3.5 w-3.5 text-emerald-500" />
+          <div className="flex items-center gap-2 text-xs text-subtle-foreground">
+            <Check className="h-3.5 w-3.5 text-success" />
             Tus datos quedan aislados por negocio.
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-center text-xs text-slate-500">
+          <div className="rounded-xl border border-border bg-surface px-3 py-2.5 text-center text-xs text-subtle-foreground">
             ¿Sos cliente y querés reservar un turno?{' '}
             <Link
               href="/cliente"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-primary hover:text-primary-hover"
             >
               Ir al espacio de clientes
             </Link>

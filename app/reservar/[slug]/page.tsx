@@ -23,7 +23,7 @@ export default function BookingPage({
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center gap-3 bg-slate-50 text-sm text-slate-500">
+        <div className="flex min-h-screen items-center justify-center gap-3 bg-background text-sm text-subtle-foreground">
           <Spinner />
           Cargando el negocio…
         </div>

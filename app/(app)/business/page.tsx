@@ -105,7 +105,7 @@ export default function BusinessPage() {
 
   if (businessQuery.isLoading) {
     return (
-      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-slate-500">
+      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
         <Spinner />
         Cargando configuración…
       </Card>
@@ -150,9 +150,9 @@ export default function BusinessPage() {
         className="space-y-4"
       >
         <Card>
-          <div className="border-b border-slate-100 px-5 py-4">
-            <h2 className="text-sm font-semibold text-slate-900">Perfil</h2>
-            <p className="text-xs text-slate-500">
+          <div className="border-b border-border px-5 py-4">
+            <h2 className="text-sm font-semibold text-foreground">Perfil</h2>
+            <p className="text-xs text-subtle-foreground">
               Nombre, URL y zona horaria del negocio.
             </p>
           </div>
@@ -213,9 +213,9 @@ export default function BusinessPage() {
         </Card>
 
         <Card>
-          <div className="border-b border-slate-100 px-5 py-4">
-            <h2 className="text-sm font-semibold text-slate-900">Contacto</h2>
-            <p className="text-xs text-slate-500">
+          <div className="border-b border-border px-5 py-4">
+            <h2 className="text-sm font-semibold text-foreground">Contacto</h2>
+            <p className="text-xs text-subtle-foreground">
               Datos visibles para tus clientes.
             </p>
           </div>
@@ -273,11 +273,11 @@ export default function BusinessPage() {
         </Card>
 
         <Card>
-          <div className="border-b border-slate-100 px-5 py-4">
-            <h2 className="text-sm font-semibold text-slate-900">
+          <div className="border-b border-border px-5 py-4">
+            <h2 className="text-sm font-semibold text-foreground">
               Políticas de reserva
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-subtle-foreground">
               Reglas que aplica el motor al calcular disponibilidad.
             </p>
           </div>

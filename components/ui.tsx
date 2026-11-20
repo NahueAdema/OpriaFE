@@ -19,22 +19,23 @@ import {
 import { cn } from '@/lib/cn';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-type ButtonSize = 'sm' | 'md';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 const buttonVariants: Record<ButtonVariant, string> = {
   primary:
-    'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-indigo-600',
+    'bg-primary text-white shadow-sm shadow-primary/20 hover:bg-primary-hover focus-visible:ring-2 focus-visible:ring-primary/30',
   secondary:
-    'border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 focus-visible:outline-slate-400',
+    'border border-border bg-surface text-foreground shadow-sm hover:bg-background focus-visible:ring-2 focus-visible:ring-border',
   ghost:
-    'text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-slate-400',
+    'text-muted-foreground hover:bg-background hover:text-foreground focus-visible:ring-2 focus-visible:ring-border',
   danger:
-    'bg-rose-600 text-white shadow-sm hover:bg-rose-500 focus-visible:outline-rose-600',
+    'bg-error text-white shadow-sm shadow-error/20 hover:bg-error/90 focus-visible:ring-2 focus-visible:ring-error/30',
 };
 
 const buttonSizes: Record<ButtonSize, string> = {
   sm: 'h-9 px-3 text-sm',
   md: 'h-10 px-4 text-sm',
+  lg: 'h-11 px-5 text-sm',
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -59,7 +60,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         buttonVariants[variant],
         buttonSizes[size],
         className,
@@ -75,16 +76,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
+const fieldBase =
+  'w-full rounded-xl border border-border bg-surface px-3 text-sm text-foreground shadow-sm transition duration-150 outline-none placeholder:text-subtle-foreground focus:border-primary focus:ring-4 focus:ring-primary/15 disabled:cursor-not-allowed disabled:bg-background disabled:text-subtle-foreground';
+
 export const Input = forwardRef<
   HTMLInputElement,
   InputHTMLAttributes<HTMLInputElement>
 >(({ className, ...props }, ref) => (
   <input
     ref={ref}
-    className={cn(
-      'h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm transition outline-none placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50',
-      className,
-    )}
+    className={cn('h-10', fieldBase, className)}
     {...props}
   />
 ));
@@ -97,10 +98,7 @@ export const Select = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <select
     ref={ref}
-    className={cn(
-      'h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm transition outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50',
-      className,
-    )}
+    className={cn('h-10 appearance-none', fieldBase, className)}
     {...props}
   >
     {children}
@@ -115,10 +113,7 @@ export const Textarea = forwardRef<
 >(({ className, ...props }, ref) => (
   <textarea
     ref={ref}
-    className={cn(
-      'w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition outline-none placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50',
-      className,
-    )}
+    className={cn('min-h-[96px] py-2.5', fieldBase, className)}
     {...props}
   />
 ));
@@ -144,15 +139,15 @@ export function Field({
     <div className={cn('space-y-1.5', className)}>
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-medium text-slate-700"
+        className="block text-sm font-medium text-foreground"
       >
         {label}
       </label>
       {children}
       {error ? (
-        <p className="text-xs font-medium text-rose-600">{error}</p>
+        <p className="text-xs font-medium text-error">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-slate-500">{hint}</p>
+        <p className="text-xs text-subtle-foreground">{hint}</p>
       ) : null}
     </div>
   );
@@ -168,7 +163,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-2xl border border-slate-200 bg-white shadow-sm',
+        'rounded-2xl border border-border bg-surface shadow-sm',
         className,
       )}
     >
@@ -178,11 +173,11 @@ export function Card({
 }
 
 const badgeTones = {
-  neutral: 'bg-slate-100 text-slate-700',
-  success: 'bg-emerald-50 text-emerald-700',
-  warning: 'bg-amber-50 text-amber-700',
-  danger: 'bg-rose-50 text-rose-700',
-  info: 'bg-indigo-50 text-indigo-700',
+  neutral: 'bg-background text-foreground',
+  success: 'bg-success/10 text-success',
+  warning: 'bg-warning/10 text-warning',
+  danger: 'bg-error/10 text-error',
+  info: 'bg-accent-soft text-primary-dark',
 } as const;
 
 export function Badge({
@@ -210,14 +205,14 @@ export function Badge({
 export function Spinner({ className }: { className?: string }) {
   return (
     <Loader2
-      className={cn('h-5 w-5 animate-spin text-indigo-600', className)}
+      className={cn('h-5 w-5 animate-spin text-primary', className)}
     />
   );
 }
 
 export function FullScreenLoader({ label }: { label?: string }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-slate-50 text-slate-500">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background text-subtle-foreground">
       <Spinner className="h-7 w-7" />
       <p className="text-sm">{label ?? 'Cargando…'}</p>
     </div>
@@ -226,7 +221,7 @@ export function FullScreenLoader({ label }: { label?: string }) {
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+    <div className="flex items-start gap-2 rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
       <span>{message}</span>
     </div>
@@ -235,7 +230,7 @@ export function ErrorBanner({ message }: { message: string }) {
 
 export function SuccessBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+    <div className="flex items-start gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
       <span>{message}</span>
     </div>
@@ -254,13 +249,13 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-surface px-6 py-14 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background text-subtle-foreground">
         <Icon className="h-5 w-5" />
       </div>
-      <div className="space-y-1">
-        <p className="text-sm font-semibold text-slate-900">{title}</p>
-        <p className="max-w-sm text-sm text-slate-500">{description}</p>
+      <div className="space-y-1.5">
+        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="max-w-sm text-sm text-subtle-foreground">{description}</p>
       </div>
       {action}
     </div>
@@ -277,16 +272,18 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {title}
         </h1>
         {description ? (
-          <p className="max-w-2xl text-sm text-slate-500">{description}</p>
+          <p className="max-w-2xl text-sm text-subtle-foreground sm:text-base">
+            {description}
+          </p>
         ) : null}
       </div>
-      {action}
+      {action ? <div className="flex flex-wrap items-center gap-2">{action}</div> : null}
     </div>
   );
 }
@@ -333,34 +330,34 @@ export function Modal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/40 p-4 backdrop-blur-sm sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-primary-dark/40 p-4 backdrop-blur-sm sm:p-8">
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          'w-full rounded-2xl border border-slate-200 bg-white shadow-xl',
+          'w-full rounded-2xl border border-border bg-surface shadow-2xl',
           wide ? 'max-w-2xl' : 'max-w-lg',
         )}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+        <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
             {description ? (
-              <p className="text-sm text-slate-500">{description}</p>
+              <p className="text-sm text-subtle-foreground">{description}</p>
             ) : null}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-1.5 text-subtle-foreground transition hover:bg-background hover:text-foreground"
             aria-label="Cerrar"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="px-5 py-4">{children}</div>
+        <div className="px-6 py-5">{children}</div>
         {footer ? (
-          <div className="flex flex-col-reverse gap-2 border-t border-slate-100 px-5 py-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2 border-t border-border px-6 py-5 sm:flex-row sm:justify-end">
             {footer}
           </div>
         ) : null}
