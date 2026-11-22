@@ -11,14 +11,6 @@ export const loginFormSchema = z.object({
     .min(1, 'Ingresá tu email')
     .refine((value) => emailPattern.test(value), 'Email inválido'),
   password: z.string().min(1, 'Ingresá tu contraseña'),
-  tenantSlug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .refine(
-      (value) => value === '' || slugPattern.test(value),
-      'Usá minúsculas, números y guiones',
-    ),
 });
 
 export const registerFormSchema = z.object({

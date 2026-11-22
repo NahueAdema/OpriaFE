@@ -241,7 +241,6 @@ export interface PublicBookingInput {
 export interface LoginInput {
   email: string;
   password: string;
-  tenantSlug?: string;
 }
 
 export interface RegisterInput {
@@ -305,6 +304,7 @@ export interface ProblemDetails {
   title?: string;
   status?: number;
   detail?: string;
+  code?: string;
   errors?: Array<{ path?: string; message?: string }>;
 }
 

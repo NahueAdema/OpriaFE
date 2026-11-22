@@ -41,12 +41,22 @@ import type {
   WorkingHoursResponse,
 } from './types';
 
+const LOCAL_API_URL = 'http://127.0.0.1:3001/v1';
+
+/**
+ * `next dev` always targets the local API, even if a stale shell variable or
+ * an old `.env.local` points to production. Production builds keep using
+ * NEXT_PUBLIC_API_URL (baked at build time).
+ */
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001/v1';
+  process.env.NODE_ENV === 'development'
+    ? LOCAL_API_URL
+    : (process.env.NEXT_PUBLIC_API_URL ?? LOCAL_API_URL);
 
 export class ApiError extends Error {
   readonly status: number;
   readonly detail: string | undefined;
+  readonly code: string | undefined;
   readonly errors: Array<{ path?: string; message: string }>;
 
   constructor(status: number, body: unknown) {
@@ -58,6 +68,7 @@ export class ApiError extends Error {
     this.name = 'ApiError';
     this.status = status;
     this.detail = problem?.detail;
+    this.code = typeof problem?.code === 'string' ? problem.code : undefined;
     this.errors = (problem?.errors ?? [])
       .filter((issue) => typeof issue?.message === 'string')
       .map((issue) => ({ path: issue.path, message: issue.message as string }));

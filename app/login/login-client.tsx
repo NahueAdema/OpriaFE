@@ -13,6 +13,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
+import { BrandLogo } from '@/components/brand-logo';
 import { useAuth } from '@/components/auth-provider';
 import { ApiError } from '@/lib/api';
 import {
@@ -22,6 +23,8 @@ import {
   type RegisterFormValues,
 } from '@/lib/schemas';
 import { Button, Field, Input } from '@/components/ui';
+
+const CUSTOMER_ACCOUNT_ERROR_CODE = 'CUSTOMER_ACCOUNT';
 
 const highlights = [
   {
@@ -60,10 +63,11 @@ export function LoginClient({
   const { status, signIn, signUp } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>(defaultMode);
   const [error, setError] = useState<string | null>(null);
+  const [isCustomerAccount, setIsCustomerAccount] = useState(false);
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
-    defaultValues: { email: '', password: '', tenantSlug: '' },
+    defaultValues: { email: '', password: '' },
   });
 
   const registerForm = useForm<RegisterFormValues>({
@@ -86,19 +90,26 @@ export function LoginClient({
   function switchMode(next: 'login' | 'register') {
     setMode(next);
     setError(null);
+    setIsCustomerAccount(false);
   }
 
   async function onLogin(values: LoginFormValues) {
     setError(null);
+    setIsCustomerAccount(false);
 
     try {
-      await signIn({
-        email: values.email,
-        password: values.password,
-        tenantSlug: values.tenantSlug || undefined,
-      });
+      await signIn({ email: values.email, password: values.password });
       router.replace('/dashboard');
     } catch (cause) {
+      if (
+        cause instanceof ApiError &&
+        cause.code === CUSTOMER_ACCOUNT_ERROR_CODE
+      ) {
+        setError('Tu cuenta es de cliente. Ingresá desde el espacio de clientes.');
+        setIsCustomerAccount(true);
+        return;
+      }
+
       setError(
         cause instanceof ApiError
           ? cause.message
@@ -138,14 +149,8 @@ export function LoginClient({
         <div className="absolute top-24 -left-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
         <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
 
-        <div className="relative flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-xl font-bold shadow-lg shadow-primary/40">
-            O
-          </span>
-          <div>
-            <p className="text-lg font-semibold">Opria</p>
-            <p className="text-xs text-subtle-foreground">Turnos con IA</p>
-          </div>
+        <div className="relative flex h-11 items-center">
+          <BrandLogo variant="full" inverted className="h-10" priority />
         </div>
 
         <div className="relative space-y-8">
@@ -187,13 +192,8 @@ export function LoginClient({
 
       <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
         <div className="w-full max-w-md space-y-6">
-          <div className="space-y-2 lg:hidden">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-base font-bold text-white">
-                O
-              </span>
-              Opria
-            </span>
+          <div className="flex h-9 items-center lg:hidden">
+            <BrandLogo variant="full" className="h-8" />
           </div>
 
           <div className="space-y-1">
@@ -235,8 +235,16 @@ export function LoginClient({
           </div>
 
           {error ? (
-            <div className="rounded-xl border border-error bg-error/10 px-3 py-2 text-sm text-error">
-              {error}
+            <div className="space-y-1 rounded-xl border border-error bg-error/10 px-3 py-2 text-sm text-error">
+              <p>{error}</p>
+              {isCustomerAccount ? (
+                <Link
+                  href="/cliente/login"
+                  className="font-medium underline underline-offset-2"
+                >
+                  Ir al ingreso de clientes
+                </Link>
+              ) : null}
             </div>
           ) : null}
 
@@ -270,19 +278,6 @@ export function LoginClient({
                   autoComplete="current-password"
                   placeholder="••••••••••"
                   {...loginForm.register('password')}
-                />
-              </Field>
-
-              <Field
-                label="Slug del negocio"
-                htmlFor="login-tenant"
-                hint="Solo si pertenecés a más de un negocio."
-                error={loginForm.formState.errors.tenantSlug?.message}
-              >
-                <Input
-                  id="login-tenant"
-                  placeholder="mi-negocio"
-                  {...loginForm.register('tenantSlug')}
                 />
               </Field>
 
