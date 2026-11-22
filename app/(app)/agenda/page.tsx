@@ -40,9 +40,9 @@ import {
   EmptyState,
   ErrorBanner,
   Modal,
-  PageHeader,
   Spinner,
   Textarea,
+  WakingUpHint,
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -148,26 +148,39 @@ export default function AgendaPage() {
 
   return (
     <>
-      <PageHeader
-        title="Agenda"
-        description="Revisá los turnos del mes, confirmá solicitudes y abrí el detalle de cada reserva."
-        action={
-          <div className="flex items-center gap-2">
-            {monthPending > 0 ? (
-              <Badge tone="warning">
-                {monthPending} pendiente{monthPending === 1 ? '' : 's'}
-              </Badge>
-            ) : null}
-            <Button
-              variant="secondary"
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">ORGANIZÁ TU TIEMPO</div>
+          <h1>Mi agenda</h1>
+          <p>Gestioná tus citas y mantené tu día en orden.</p>
+        </div>
+        <div className="title-action agenda-toolbar">
+          <div className="agenda-date-controls">
+            <button
+              type="button"
+              className="button button-secondary"
               onClick={goToToday}
               disabled={!todayKey}
             >
               Hoy
-            </Button>
+            </button>
+            <strong>
+              {monthKey ? formatMonthLabel(monthKey) : 'Cargando…'}{' '}
+              <span>· {selectedDate}</span>
+            </strong>
           </div>
-        }
-      />
+          <div className="agenda-filters">
+            {appointmentsQuery.isLoading ? (
+              <WakingUpHint className="text-left" />
+            ) : null}
+            {monthPending > 0 ? (
+              <span className="nav-count" style={{ background: 'color-mix(in srgb, var(--warning) 16%, transparent)', color: 'var(--warning)', border: 'none' }}>
+                {monthPending} pendiente{monthPending === 1 ? '' : 's'}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
 
       {appointmentsQuery.error ? (
         <ErrorBanner

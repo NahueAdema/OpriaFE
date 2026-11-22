@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CalendarCheck } from 'lucide-react';
+import { BrandLogo } from '@/components/brand-logo';
 import { BusinessSearch } from '@/components/public/business-search';
 
 /** Public booking funnel: opt into instant-navigation validation explicitly. */
@@ -7,14 +8,11 @@ export const instant = true;
 
 export default function PublicSearchPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-surface">
       <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 py-10 sm:px-6">
         <header className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-white shadow-lg shadow-primary">
-              O
-            </span>
-            <span className="text-lg font-semibold text-foreground">Opria</span>
+          <Link href="/" className="flex h-10 items-center" aria-label="Opria">
+            <BrandLogo variant="full" className="h-9" />
           </Link>
           <Link
             href="/login"

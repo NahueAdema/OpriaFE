@@ -1,20 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { KeyRound, LogOut, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, KeyRound, LogOut, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/components/auth-provider';
-import {
-  Button,
-  Card,
-  ErrorBanner,
-  Field,
-  Input,
-  PageHeader,
-  SuccessBanner,
-} from '@/components/ui';
+import { ErrorBanner, SuccessBanner } from '@/components/ui';
 import { ApiError, api } from '@/lib/api';
 import {
   changePasswordFormSchema,
@@ -37,6 +30,7 @@ function isWrongPassword(error: unknown): boolean {
 export default function AccountPage() {
   const router = useRouter();
   const { auth, signOut } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordFormSchema),
     defaultValues: DEFAULTS,
@@ -70,131 +64,143 @@ export default function AccountPage() {
         : 'No pudimos cambiar la contraseña.'
       : null;
 
+  const errors = form.formState.errors;
+
   return (
     <>
-      <PageHeader
-        title="Mi cuenta"
-        description="Tus datos de acceso y la seguridad de la sesión."
-      />
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">TU PERFIL</div>
+          <h1>Mi cuenta</h1>
+          <p>Administrá tus datos personales y la seguridad de tu cuenta.</p>
+        </div>
+      </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <Card className="p-5 sm:p-6">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-primary">
-              <KeyRound className="h-4 w-4" />
-            </span>
-            <div>
-              <h2 className="text-base font-semibold text-foreground">
-                Cambiar contraseña
-              </h2>
-              <p className="text-xs text-subtle-foreground">
-                Al menos 10 caracteres, distinta de la actual.
-              </p>
+      <div className="account-layout">
+        <div className="account-main">
+          <div className="form-card">
+            <div className="form-card-heading">
+              <h2>Información personal</h2>
+              <p>Estos datos son privados y solo vos podés verlos.</p>
+            </div>
+            <div className="account-person">
+              <div className="avatar avatar-owner account-avatar">
+                {(auth?.user.name ?? 'U').slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <strong>{auth?.user.name ?? '—'}</strong>
+                <p>{auth?.tenant.name ?? '—'}</p>
+              </div>
+            </div>
+            <div className="form-grid">
+              <label className="form-field">
+                Nombre
+                <input defaultValue={auth?.user.name ?? ''} readOnly />
+              </label>
+              <label className="form-field">
+                Correo electrónico
+                <input type="email" defaultValue={auth?.user.email ?? ''} readOnly />
+              </label>
+              <label className="form-field full-field">
+                Negocio
+                <input defaultValue={auth?.tenant.name ?? ''} readOnly />
+              </label>
             </div>
           </div>
 
-          <form
-            className="mt-5 space-y-4"
-            onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
-            noValidate
-          >
-            <Field
-              label="Contraseña actual"
-              htmlFor="current-password"
-              error={form.formState.errors.currentPassword?.message}
-            >
-              <Input
-                id="current-password"
-                type="password"
-                autoComplete="current-password"
-                {...form.register('currentPassword')}
-              />
-            </Field>
-
-            <Field
-              label="Contraseña nueva"
-              htmlFor="new-password"
-              error={form.formState.errors.newPassword?.message}
-            >
-              <Input
-                id="new-password"
-                type="password"
-                autoComplete="new-password"
-                {...form.register('newPassword')}
-              />
-            </Field>
-
-            <Field
-              label="Repetir contraseña nueva"
-              htmlFor="confirm-password"
-              error={form.formState.errors.confirmPassword?.message}
-            >
-              <Input
-                id="confirm-password"
-                type="password"
-                autoComplete="new-password"
-                {...form.register('confirmPassword')}
-              />
-            </Field>
-
-            {generalError ? <ErrorBanner message={generalError} /> : null}
-
-            {mutation.isSuccess ? (
-              <SuccessBanner message="Contraseña actualizada. Cerramos las sesiones en otros dispositivos." />
-            ) : null}
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Guardando…' : 'Actualizar contraseña'}
-              </Button>
+          <div className="form-card password-card">
+            <div className="form-card-heading">
+              <h2>Contraseña y seguridad</h2>
+              <p>Actualizá tu contraseña para mantener tu cuenta segura.</p>
             </div>
-          </form>
-        </Card>
-
-        <div className="space-y-6">
-          <Card className="p-5">
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Cuenta
-            </div>
-            <dl className="mt-3 space-y-3 text-sm">
-              <div>
-                <dt className="text-xs text-subtle-foreground">Nombre</dt>
-                <dd className="font-medium text-foreground">
-                  {auth?.user.name ?? '—'}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-subtle-foreground">Email</dt>
-                <dd className="font-medium break-all text-foreground">
-                  {auth?.user.email ?? '—'}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-subtle-foreground">Negocio</dt>
-                <dd className="font-medium text-foreground">
-                  {auth?.tenant.name ?? '—'}
-                </dd>
-              </div>
-            </dl>
-          </Card>
-
-          <Card className="p-5">
-            <h2 className="text-sm font-semibold text-foreground">Sesión</h2>
-            <p className="mt-1 text-xs leading-relaxed text-subtle-foreground">
-              Cerrá la sesión en este dispositivo. Las demás sesiones ya se
-              cierran al cambiar la contraseña.
-            </p>
-            <Button
-              type="button"
-              variant="secondary"
-              className="mt-4 w-full"
-              onClick={handleSignOut}
+            <form
+              onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+              noValidate
             >
-              <LogOut className="h-4 w-4" />
-              Cerrar sesión
-            </Button>
-          </Card>
+              {generalError ? <ErrorBanner message={generalError} /> : null}
+              {mutation.isSuccess ? (
+                <SuccessBanner message="Contraseña actualizada. Cerramos las sesiones en otros dispositivos." />
+              ) : null}
+              <div className="form-grid">
+                <label className="form-field full-field">
+                  Contraseña actual
+                  <div className="password-input">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Ingresá tu contraseña actual"
+                      {...form.register('currentPassword')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    >
+                      {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    </button>
+                  </div>
+                  {errors.currentPassword && (
+                    <span className="text-error" style={{ fontSize: 9 }}>{errors.currentPassword.message}</span>
+                  )}
+                </label>
+                <label className="form-field">
+                  Nueva contraseña
+                  <input
+                    type="password"
+                    placeholder="Mínimo 10 caracteres"
+                    {...form.register('newPassword')}
+                  />
+                  {errors.newPassword && (
+                    <span className="text-error" style={{ fontSize: 9 }}>{errors.newPassword.message}</span>
+                  )}
+                </label>
+                <label className="form-field">
+                  Repetir contraseña
+                  <input
+                    type="password"
+                    placeholder="Repetí la contraseña"
+                    {...form.register('confirmPassword')}
+                  />
+                  {errors.confirmPassword && (
+                    <span className="text-error" style={{ fontSize: 9 }}>{errors.confirmPassword.message}</span>
+                  )}
+                </label>
+              </div>
+              <div className="form-footer">
+                <span>Última actualización de contraseña</span>
+                <button
+                  type="submit"
+                  className="button button-primary"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? 'Guardando…' : 'Actualizar contraseña'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div className="account-side">
+          <div className="account-plan">
+            <div className="plan-icon">
+              <ShieldCheck size={18} />
+            </div>
+            <span>PLAN ACTUAL</span>
+            <h3>Profesional</h3>
+            <p>Tu negocio está en el plan profesional. Disfrutá de todas las funciones.</p>
+            <button type="button">Mejorar plan →</button>
+          </div>
+          <div className="account-links">
+            <button type="button">
+              <KeyRound size={14} /> Seguridad de la cuenta
+            </button>
+            <button type="button" onClick={handleSignOut}>
+              <LogOut size={14} /> Cerrar sesión
+            </button>
+          </div>
+          <div className="account-support">
+            <span>¿Necesitás ayuda?</span>
+            <a href="#ayuda">Contactar soporte</a>
+          </div>
         </div>
       </div>
     </>

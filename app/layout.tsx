@@ -17,14 +17,6 @@ export const metadata: Metadata = {
   title: 'Opria · Turnos y agenda para tu negocio',
   description:
     'Reservas online, agenda y disponibilidad para negocios de servicios.',
-  icons: {
-    icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

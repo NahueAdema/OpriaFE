@@ -1,24 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import {
   ArrowRight,
   Building2,
-  CalendarClock,
   CalendarDays,
   CheckCircle2,
   Circle,
   Clock3,
   Inbox,
+  Link2,
   Scissors,
   Users,
 } from 'lucide-react';
+import { Badge, ErrorBanner, Spinner, WakingUpHint } from '@/components/ui';
 import { api } from '@/lib/api';
-import { Badge, Card, ErrorBanner, PageHeader, Spinner } from '@/components/ui';
-import { formatMoney } from '@/lib/utils';
+import {
+  APPOINTMENT_STATUS_LABELS,
+  APPOINTMENT_STATUS_TONES,
+} from '@/lib/appointments';
+import { formatMoney, formatTimeInZone } from '@/lib/utils';
 
 export default function DashboardPage() {
+  const [todayLabel, setTodayLabel] = useState('');
+
   const businessQuery = useQuery({
     queryKey: ['business'],
     queryFn: () => api.business.get(),
@@ -35,6 +44,27 @@ export default function DashboardPage() {
     queryKey: ['appointments', 'pending-count'],
     queryFn: () => api.appointments.list({ status: 'pending', limit: 1 }),
   });
+  const upcomingQuery = useQuery({
+    queryKey: ['appointments', 'upcoming'],
+    queryFn: () =>
+      api.appointments.list({
+        status: 'confirmed',
+        from: new Date().toISOString(),
+        limit: 4,
+      }),
+  });
+
+  useEffect(() => {
+    if (!businessQuery.data || todayLabel) {
+      return;
+    }
+
+    const now = new Date();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTodayLabel(
+      format(now, "EEEE, d 'de' MMMM", { locale: es }).toUpperCase(),
+    );
+  }, [businessQuery.data, todayLabel]);
 
   const isLoading =
     businessQuery.isLoading || servicesQuery.isLoading || staffQuery.isLoading;
@@ -44,6 +74,8 @@ export default function DashboardPage() {
   const services = servicesQuery.data ?? [];
   const staff = staffQuery.data ?? [];
   const pendingTotal = pendingQuery.data?.total ?? 0;
+  const upcoming = upcomingQuery.data?.items ?? [];
+  const timezone = business?.timezone ?? 'America/Argentina/Buenos_Aires';
 
   const activeServices = services.filter((service) => service.active);
   const activeStaff = staff.filter((member) => member.active);
@@ -96,235 +128,260 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
-        <Spinner />
-        Cargando resumen…
-      </Card>
+      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 11 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Spinner /> Cargando resumen…
+        </div>
+        <WakingUpHint />
+      </div>
     );
   }
 
   return (
     <>
-      <PageHeader
-        title={`Hola${business ? `, ${business.name}` : ''}`}
-        description="Este es el estado de la configuración de tu negocio."
-        action={
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/agenda"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover"
-            >
-              <CalendarDays className="h-4 w-4" />
-              Abrir agenda
-            </Link>
-            <Link
-              href="/availability"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition hover:bg-background"
-            >
-              <CalendarClock className="h-4 w-4" />
-              Disponibilidad
-            </Link>
-            {business ? (
-              <Link
-                href={`/reservar/${business.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition hover:bg-background"
-              >
-                <Scissors className="h-4 w-4" />
-                Página pública
-              </Link>
-            ) : null}
-          </div>
-        }
-      />
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">{todayLabel || 'HOY'}</div>
+          <h1>¡Buen día{business ? `, ${business.name}` : ''}!</h1>
+          <p>Este es el estado de la configuración de tu negocio.</p>
+        </div>
+        <div className="title-action">
+          <Link href="/agenda" className="button button-primary">
+            <CalendarDays size={17} /> Nueva cita
+          </Link>
+        </div>
+      </div>
 
       {pendingTotal > 0 ? (
         <Link
           href="/agenda"
-          className="flex items-center gap-3 rounded-2xl border border-warning bg-warning/10 px-5 py-4 transition hover:border-warning hover:bg-warning/70"
+          className="insight-card"
+          style={{ textDecoration: 'none', color: 'inherit', marginBottom: 15 }}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-warning/10 text-muted-foreground">
-            <Inbox className="h-5 w-5" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold text-foreground">
+          <div className="insight-spark" style={{ background: 'color-mix(in srgb, var(--warning) 16%, transparent)', color: 'var(--warning)' }}>
+            <Inbox size={19} />
+          </div>
+          <div>
+            <strong>
               {pendingTotal === 1
                 ? '1 solicitud pendiente'
                 : `${pendingTotal} solicitudes pendientes`}
-            </span>
-            <span className="block text-xs text-muted-foreground">
-              Confirmá o rechazá los turnos para liberar u ocupar la agenda.
-            </span>
-          </span>
-          <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </strong>
+            <p>Confirmá o rechazá los turnos para liberar u ocupar la agenda.</p>
+          </div>
         </Link>
       ) : null}
 
       {error ? (
         <ErrorBanner
-          message={
-            error instanceof Error
-              ? error.message
-              : 'No pudimos cargar el resumen.'
-          }
+          message={error instanceof Error ? error.message : 'No pudimos cargar el resumen.'}
         />
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={Scissors}
-          label="Servicios activos"
-          value={`${activeServices.length}`}
-          hint={`${services.length} en total`}
-        />
-        <StatCard
-          icon={Users}
-          label="Equipo activo"
-          value={`${activeStaff.length}`}
-          hint={`${staff.length} en total`}
-        />
-        <StatCard
-          icon={Clock3}
-          label="Turno promedio"
-          value={`${averageDuration} min`}
-          hint="Duración de servicios activos"
-        />
-        <StatCard
-          icon={Building2}
-          label="Ticket promedio"
-          value={`$ ${formatMoney(averagePrice)}`}
-          hint="Precio de servicios activos"
-        />
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-top">
+            <span>Servicios activos</span>
+            <span className="stat-icon purple">
+              <Scissors size={18} />
+            </span>
+          </div>
+          <div className="stat-value">{activeServices.length}</div>
+          <div className="stat-foot">
+            <span className="trend">{services.length} en total</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-top">
+            <span>Equipo activo</span>
+            <span className="stat-icon green">
+              <Users size={18} />
+            </span>
+          </div>
+          <div className="stat-value">{activeStaff.length}</div>
+          <div className="stat-foot">
+            <span className="trend">{staff.length} en total</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-top">
+            <span>Turno promedio</span>
+            <span className="stat-icon peach">
+              <Clock3 size={18} />
+            </span>
+          </div>
+          <div className="stat-value">{averageDuration} min</div>
+          <div className="stat-foot">
+            <span>Duración de servicios activos</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-top">
+            <span>Ticket promedio</span>
+            <span className="stat-icon blue">
+              <Building2 size={18} />
+            </span>
+          </div>
+          <div className="stat-value">$ {formatMoney(averagePrice)}</div>
+          <div className="stat-foot">
+            <span>Precio de servicios activos</span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
-          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+      <div className="dashboard-grid" style={{ marginTop: 16 }}>
+        <div className="form-card">
+          <div className="card-heading">
             <div>
-              <h2 className="text-sm font-semibold text-foreground">
-                Puesta en marcha
-              </h2>
-              <p className="text-xs text-subtle-foreground">
-                Completá estos pasos para empezar a recibir turnos.
-              </p>
+              <h2>Puesta en marcha</h2>
+              <p>Completá estos pasos para empezar a recibir turnos.</p>
             </div>
-            <Badge tone="info">
-              {steps.filter((step) => step.done).length}/{steps.length}
-            </Badge>
+            <span className="nav-count" style={{ background: 'color-mix(in srgb, var(--success) 14%, transparent)', color: 'var(--success)', border: 'none' }}>
+              {steps.filter((s) => s.done).length}/{steps.length}
+            </span>
           </div>
-          <ul className="divide-y divide-border">
+          <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0 0' }}>
             {steps.map((step) => (
-              <li key={step.label}>
+              <li key={step.label} style={{ borderTop: '1px solid var(--border)' }}>
                 <Link
                   href={step.href}
-                  className="flex items-center gap-3 px-5 py-3.5 transition hover:bg-background"
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 0', textDecoration: 'none', color: 'inherit' }}
                 >
                   {step.done ? (
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+                    <CheckCircle2 size={18} style={{ color: 'var(--success)', flexShrink: 0 }} />
                   ) : (
-                    <Circle className="h-5 w-5 shrink-0 text-subtle-foreground" />
+                    <Circle size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   )}
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-foreground">
-                      {step.label}
-                    </p>
-                    <p className="text-xs text-subtle-foreground">{step.description}</p>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-primary)' }}>{step.label}</p>
+                    <p style={{ fontSize: 9, color: 'var(--text-muted)' }}>{step.description}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-subtle-foreground" />
+                  <ArrowRight size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                 </Link>
               </li>
             ))}
           </ul>
-        </Card>
+        </div>
 
-        <Card className="lg:col-span-2">
-          <div className="border-b border-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-foreground">
-              Configuración actual
-            </h2>
-            <p className="text-xs text-subtle-foreground">
-              Datos que usa el motor de disponibilidad.
-            </p>
+        <div className="form-card">
+          <div className="card-heading">
+            <div>
+              <h2>Configuración actual</h2>
+              <p>Datos que usa el motor de disponibilidad.</p>
+            </div>
           </div>
           {business ? (
-            <dl className="space-y-3 px-5 py-4 text-sm">
-              <DetailRow label="Negocio" value={business.name} />
-              <DetailRow label="Slug" value={business.slug} />
-              <DetailRow label="Timezone" value={business.timezone} />
-              <DetailRow
-                label="Anticipación mínima"
-                value={`${business.bookingMinAdvanceMinutes} min`}
-              />
-              <DetailRow
-                label="Ventana de reserva"
-                value={`${business.bookingMaxAdvanceDays} días`}
-              />
-              <DetailRow
-                label="Cancelación"
-                value={`${business.cancellationHours} h · ${
-                  business.cancellationDepositPolicy === 'retain'
-                    ? 'retiene seña'
-                    : 'devuelve seña'
-                }`}
-              />
+            <dl style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 0 0', fontSize: 11 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Negocio</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.name}</dd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Slug</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.slug}</dd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Timezone</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.timezone}</dd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Anticipación mínima</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.bookingMinAdvanceMinutes} min</dd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Ventana de reserva</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.bookingMaxAdvanceDays} días</dd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <dt style={{ color: 'var(--text-secondary)' }}>Cancelación</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>
+                  {business.cancellationHours} h · {business.cancellationDepositPolicy === 'retain' ? 'retiene seña' : 'devuelve seña'}
+                </dd>
+              </div>
             </dl>
           ) : (
-            <p className="px-5 py-4 text-sm text-subtle-foreground">
-              Todavía no pudimos cargar el negocio.
-            </p>
+            <p style={{ padding: '12px 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>Todavía no pudimos cargar el negocio.</p>
           )}
-          <div className="border-t border-border px-5 py-3">
-            <Link
-              href="/business"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-hover"
-            >
-              Editar configuración
-              <ArrowRight className="h-3.5 w-3.5" />
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12, marginTop: 12 }}>
+            <Link href="/business" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 600, color: 'var(--primary-hover)', textDecoration: 'none' }}>
+              Editar configuración <ArrowRight size={13} />
             </Link>
           </div>
-        </Card>
+        </div>
+
+        <div className="today-card">
+          <div className="card-heading">
+            <div>
+              <h2>Próximos turnos</h2>
+              <p>Lo que viene en tu agenda.</p>
+            </div>
+            <Link href="/agenda" className="text-link">
+              Ver agenda
+            </Link>
+          </div>
+          {upcoming.length === 0 ? (
+            <p style={{ padding: '16px 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
+              No hay turnos confirmados por ahora.
+            </p>
+          ) : (
+            <div className="appointment-list">
+              {upcoming.map((appointment) => (
+                <div key={appointment.id} className="appointment-row">
+                  <span className="appointment-time">
+                    {formatTimeInZone(appointment.startsAt, timezone)}
+                  </span>
+                  <span
+                    className={`appointment-avatar ${
+                      APPOINTMENT_STATUS_TONES[appointment.status] === 'success'
+                        ? 'avatar-mint'
+                        : 'avatar-lilac'
+                    }`}
+                  >
+                    {appointment.customerName.slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="appointment-info">
+                    <strong>{appointment.customerName}</strong>
+                    <span>
+                      {appointment.serviceName} · {appointment.staffName}
+                    </span>
+                  </span>
+                  <Badge tone={APPOINTMENT_STATUS_TONES[appointment.status]}>
+                    {APPOINTMENT_STATUS_LABELS[appointment.status]}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="bottom-grid">
+        <div className="insight-card">
+          <div className="insight-spark">
+            <CalendarDays size={19} />
+          </div>
+          <div>
+            <strong>Tu semana empieza muy bien</strong>
+            <p>Tenés {activeServices.length} servicios activos y {activeStaff.length} profesionales en el equipo.</p>
+          </div>
+        </div>
+        <div className="booking-card">
+          <div className="booking-icon">
+            <Link2 size={17} />
+          </div>
+          <div>
+            <strong>Tu agenda online está activa</strong>
+            <p>Compartí tu enlace para recibir reservas.</p>
+          </div>
+          {business ? (
+            <Link href={`/reservar/${business.slug}`} target="_blank" rel="noreferrer" aria-label="Abrir página pública" style={{ background: 'none', border: 'none', color: 'var(--text-muted)', padding: 4, cursor: 'pointer' }}>
+              <ArrowRight size={16} />
+            </Link>
+          ) : null}
+        </div>
       </div>
     </>
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  hint,
-}: {
-  icon: typeof Scissors;
-  label: string;
-  value: string;
-  hint: string;
-}) {
-  return (
-    <Card className="p-5">
-      <div className="flex items-center gap-2 text-subtle-foreground">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-primary">
-          <Icon className="h-4 w-4" />
-        </span>
-        <span className="text-xs font-medium tracking-wide uppercase">
-          {label}
-        </span>
-      </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-        {value}
-      </p>
-      <p className="mt-1 text-xs text-subtle-foreground">{hint}</p>
-    </Card>
-  );
-}
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-3">
-      <dt className="text-subtle-foreground">{label}</dt>
-      <dd className="max-w-[60%] text-right font-medium break-words text-foreground">
-        {value}
-      </dd>
-    </div>
-  );
-}

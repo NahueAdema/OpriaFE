@@ -10,6 +10,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   useEffect(() => {
     const current =
       (document.documentElement.dataset.theme as 'light' | 'dark') || 'light';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(current);
   }, []);
 

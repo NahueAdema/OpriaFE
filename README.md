@@ -22,18 +22,22 @@ autenticación JWT y refresh tokens opacos.
 
 ## Variables de entorno
 
-Copiá `.env.example` a `.env.local` y ajustá la URL de la API:
+El repo incluye `.env` con la URL local:
 
 ```bash
 NEXT_PUBLIC_API_URL=http://127.0.0.1:3001/v1
 ```
 
-`NEXT_PUBLIC_API_URL` se inyecta en tiempo de build. Si cambiás la URL, volvé a
-compilar (`npm run build`) antes de `npm run start`. En desarrollo, `next dev`
-la toma al arrancar.
+`next dev` **siempre** llama a `http://127.0.0.1:3001/v1`, aunque quede una
+variable de entorno o un `.env.local` apuntando a producción. Para producción,
+`NEXT_PUBLIC_API_URL` se inyecta en tiempo de build (lo hace el workflow de CI);
+si cambiás la URL, volvé a compilar (`npm run build`) antes de `npm run start`.
+Si abrís un build viejo con `npm run start`, ese build todavía puede apuntar a
+prod: generá uno nuevo.
 
-> El backend solo permite los orígenes configurados en `CORS_ORIGINS`. Para
-> desarrollo local, levantá el frontend en `http://localhost:3000`.
+> El backend permite ambos orígenes locales en `CORS_ORIGINS`:
+> `http://localhost:3000` y `http://127.0.0.1:3000`. Usá el que prefieras, pero
+> mantené la misma hostname en la barra de direcciones y en el origen permitido.
 
 ## Comandos
 
@@ -109,6 +113,13 @@ redirige a `/login` (negocio) o `/cliente/login` (cliente).
 `/cuenta` permite cambiar la contraseña del negocio. La API revoca las demás
 sesiones y conserva la actual, así el panel sigue funcionando sin volver a
 ingresar.
+
+`/login` solo pide email y contraseña: el slug se usa únicamente al registrar el
+negocio. Si un usuario pertenece a varios negocios, el backend elige la
+membership activa con rol más alto (`owner` → `admin` → `staff`). Si las
+credenciales corresponden a una cuenta de cliente, la API devuelve el código
+`CUSTOMER_ACCOUNT` y el form muestra un enlace a `/cliente/login`. El hint solo
+se emite después de verificar la contraseña.
 
 ## Cuentas de cliente
 

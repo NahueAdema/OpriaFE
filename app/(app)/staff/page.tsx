@@ -38,9 +38,9 @@ import {
   Field,
   Input,
   Modal,
-  PageHeader,
   Spinner,
   SuccessBanner,
+  WakingUpHint,
 } from '@/components/ui';
 
 type Tab = 'perfil' | 'servicios' | 'horarios' | 'bloqueos';
@@ -83,16 +83,23 @@ export default function StaffPage() {
 
   return (
     <>
-      <PageHeader
-        title="Equipo"
-        description="Profesionales, servicios que atienden, horario semanal y bloqueos."
-        action={
-          <Button onClick={() => setCreating(true)}>
-            <Plus className="h-4 w-4" />
-            Nuevo integrante
-          </Button>
-        }
-      />
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">LAS PERSONAS DETRÁS DE TU NEGOCIO</div>
+          <h1>Tu equipo</h1>
+          <p>Administrá profesionales, servicios y horarios de atención.</p>
+        </div>
+        <div className="title-action">
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={() => setCreating(true)}
+          >
+            <Plus size={17} />
+            Agregar profesional
+          </button>
+        </div>
+      </div>
 
       {staffQuery.error ? (
         <ErrorBanner
@@ -105,9 +112,12 @@ export default function StaffPage() {
       ) : null}
 
       {staffQuery.isLoading ? (
-        <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
-          <Spinner />
-          Cargando equipo…
+        <Card className="flex flex-col items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
+          <div className="flex items-center gap-3">
+            <Spinner />
+            Cargando equipo…
+          </div>
+          <WakingUpHint />
         </Card>
       ) : staff.length === 0 ? (
         <EmptyState
@@ -123,98 +133,74 @@ export default function StaffPage() {
         />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr] lg:items-start">
-          <Card className="overflow-hidden">
-            <div className="border-b border-border px-4 py-3 text-xs font-medium tracking-wide text-subtle-foreground uppercase">
-              {staff.length} integrantes
+          <div className="team-table">
+            <div className="team-table-head">
+              <span>PROFESIONAL</span>
+              <span>SERVICIOS</span>
+              <span>ESTADO</span>
+              <span />
             </div>
-            <ul className="divide-y divide-border">
-              {staff.map((member) => (
-                <li key={member.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedId(member.id);
-                      setTab('perfil');
-                    }}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${
-                      member.id === resolvedId
-                        ? 'bg-accent-soft/70'
-                        : 'hover:bg-background'
+            {staff.map((member, index) => (
+              <button
+                key={member.id}
+                type="button"
+                onClick={() => {
+                  setSelectedId(member.id);
+                  setTab('perfil');
+                }}
+                className={`professional-row w-full text-left transition ${
+                  member.id === resolvedId ? 'bg-accent-soft/70' : 'hover:bg-background'
+                }`}
+              >
+                <span className="professional-cell">
+                  <span
+                    className={`grid size-8 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white ${
+                      ['bg-primary', 'bg-warning', 'bg-success'][index % 3]
                     }`}
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-dark text-xs font-semibold text-white">
-                      {initials(member.name)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-foreground">
-                        {member.name}
-                      </span>
-                      <span className="block text-xs text-subtle-foreground">
-                        {member.services.length} servicios
-                      </span>
-                    </span>
-                    {member.active ? (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-success" />
-                    ) : (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-border" />
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Card>
+                    {initials(member.name)}
+                  </span>
+                  <span className="flex min-w-0 flex-col gap-1">
+                    <strong className="truncate">{member.name}</strong>
+                    <small>{member.services.length} servicios</small>
+                  </span>
+                </span>
+                <span className="team-services">
+                  {member.services.slice(0, 3).map((service) => (
+                    <span key={service.id}>{service.name}</span>
+                  ))}
+                  {member.services.length === 0 ? <span>Sin servicios</span> : null}
+                </span>
+                <span className="team-hours">
+                  <span
+                    className={`size-1.5 rounded-full ${member.active ? 'bg-success' : 'bg-border'}`}
+                  />
+                  {member.active ? 'Activo' : 'Inactivo'}
+                </span>
+                <span />
+              </button>
+            ))}
+          </div>
 
           {selected ? (
             <div className="space-y-4">
-              <Card>
-                <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-semibold text-white">
-                      {initials(selected.name)}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-base font-semibold text-foreground">
-                          {selected.name}
-                        </h2>
-                        {selected.active ? (
-                          <Badge tone="success">Activo</Badge>
-                        ) : (
-                          <Badge tone="neutral">Inactivo</Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-subtle-foreground">
-                        {selected.services.length > 0
-                          ? selected.services
-                              .map((service) => service.name)
-                              .join(' · ')
-                          : 'Sin servicios asignados'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-1 overflow-x-auto border-t border-border px-3 py-2">
-                  {TABS.map((item) => {
-                    const Icon = item.icon;
+              <div className="team-tabs">
+                {TABS.map((item) => {
+                  const Icon = item.icon;
 
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setTab(item.id)}
-                        className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                          tab === item.id
-                            ? 'bg-primary text-white'
-                            : 'text-muted-foreground hover:bg-accent-soft hover:text-foreground'
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </Card>
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setTab(item.id)}
+                      className={`team-tab ${tab === item.id ? 'team-tab-active' : ''}`}
+                    >
+                      <Icon className="mr-1.5 inline-block size-3.5 align-[-2px]" />
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
 
               {tab === 'perfil' ? (
                 <ProfileTab key={selected.id} member={selected} />
@@ -586,9 +572,12 @@ function HoursTab({ member }: { member: StaffMember }) {
         ) : null}
 
         {hoursQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-subtle-foreground">
-            <Spinner className="h-4 w-4" />
-            Cargando horario…
+          <div className="flex flex-col items-start gap-2 text-sm text-subtle-foreground">
+            <div className="flex items-center gap-2">
+              <Spinner className="h-4 w-4" />
+              Cargando horario…
+            </div>
+            <WakingUpHint className="text-left" />
           </div>
         ) : hoursQuery.error ? (
           <ErrorBanner
@@ -761,9 +750,12 @@ function TimeBlocksTab({
         ) : null}
 
         {blocksQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-subtle-foreground">
-            <Spinner className="h-4 w-4" />
-            Cargando bloqueos…
+          <div className="flex flex-col items-start gap-2 text-sm text-subtle-foreground">
+            <div className="flex items-center gap-2">
+              <Spinner className="h-4 w-4" />
+              Cargando bloqueos…
+            </div>
+            <WakingUpHint className="text-left" />
           </div>
         ) : blocksQuery.error ? (
           <ErrorBanner

@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Search,
   UserRound,
   Users,
 } from 'lucide-react';
@@ -19,17 +20,6 @@ import {
   hourInZone,
   todayKeyInZone,
 } from '@/lib/utils';
-import {
-  Badge,
-  Card,
-  EmptyState,
-  ErrorBanner,
-  Field,
-  Input,
-  PageHeader,
-  Select,
-  Spinner,
-} from '@/components/ui';
 
 const PERIODS = ['Mañana', 'Tarde', 'Noche'] as const;
 type Period = (typeof PERIODS)[number];
@@ -114,24 +104,23 @@ export default function AvailabilityPage() {
 
   return (
     <>
-      <PageHeader
-        title="Disponibilidad"
-        description="Consultá las horas reservables de un servicio en una fecha concreta."
-      />
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">RESERVAS ONLINE</div>
+          <h1>Disponibilidad</h1>
+          <p>Consultá las horas reservables para un servicio y una fecha.</p>
+        </div>
+      </div>
 
-      <Card>
-        <div className="grid gap-4 px-5 py-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
-          <Field
-            label="Servicio"
-            htmlFor="availability-service"
-            error={
-              servicesQuery.error
-                ? 'No pudimos cargar los servicios.'
-                : undefined
-            }
-          >
-            <Select
-              id="availability-service"
+      <div className="availability-layout">
+        <div className="form-card availability-form">
+          <div className="form-card-heading">
+            <h2>Buscá horarios disponibles</h2>
+            <p>Elegí un servicio y una fecha para ver las opciones.</p>
+          </div>
+          <label className="form-field">
+            Servicio
+            <select
               value={effectiveServiceId}
               onChange={(event) => setServiceId(event.target.value)}
             >
@@ -143,177 +132,137 @@ export default function AvailabilityPage() {
                   {item.name} · {item.durationMinutes} min
                 </option>
               ))}
-            </Select>
-          </Field>
-
-          <Field
-            label="Profesional"
-            htmlFor="availability-staff"
-            hint="Dejalo en blanco para ver todo el equipo."
-          >
-            <Select
-              id="availability-staff"
+            </select>
+          </label>
+          <label className="form-field">
+            Fecha
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              <button
+                type="button"
+                className="square-control"
+                aria-label="Día anterior"
+                onClick={() => effectiveDate && setDate(addDaysToKey(effectiveDate, -1))}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <input
+                type="date"
+                value={effectiveDate}
+                onChange={(event) => setDate(event.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className="square-control"
+                aria-label="Día siguiente"
+                onClick={() => effectiveDate && setDate(addDaysToKey(effectiveDate, 1))}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </label>
+          <label className="form-field">
+            Profesional
+            <select
               value={staffId}
               onChange={(event) => setStaffId(event.target.value)}
             >
-              <option value="">Todo el equipo</option>
+              <option value="">Cualquier profesional</option>
               {staff.map((member) => (
                 <option key={member.id} value={member.id}>
                   {member.name}
                 </option>
               ))}
-            </Select>
-          </Field>
-
-          <Field label="Fecha" htmlFor="availability-date">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  effectiveDate && setDate(addDaysToKey(effectiveDate, -1))
-                }
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-subtle-foreground shadow-sm transition hover:bg-background hover:text-foreground"
-                aria-label="Día anterior"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <Input
-                id="availability-date"
-                type="date"
-                value={effectiveDate}
-                onChange={(event) => setDate(event.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  effectiveDate && setDate(addDaysToKey(effectiveDate, 1))
-                }
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-subtle-foreground shadow-sm transition hover:bg-background hover:text-foreground"
-                aria-label="Día siguiente"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </Field>
+            </select>
+          </label>
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={() => {}}
+          >
+            <Search size={16} /> Consultar horarios
+          </button>
+          <div className="availability-helper">
+            <span>🔒</span> Los horarios se actualizan en tiempo real.
+          </div>
         </div>
-      </Card>
 
-      {services.length === 0 && !servicesQuery.isLoading ? (
-        <EmptyState
-          icon={CalendarClock}
-          title="No hay servicios activos"
-          description="Activá al menos un servicio para poder calcular disponibilidad."
-        />
-      ) : null}
+        <div className="form-card slots-card">
+          <div className="slots-heading">
+            <div>
+              <span className="slots-date-icon">
+                <CalendarClock size={17} />
+              </span>
+              <div>
+                <h2>Horarios disponibles</h2>
+                <p>{effectiveDate ? formatDateKeyLong(effectiveDate) : '—'}</p>
+              </div>
+            </div>
+            <span className="slots-count">{totalSlots} horarios</span>
+          </div>
 
-      {service ? (
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <Badge tone="info">
-            <Clock3 className="h-3.5 w-3.5" />
-            {service.durationMinutes} min
-            {service.bufferMinutes > 0
-              ? ` + ${service.bufferMinutes} min buffer`
-              : ''}
-          </Badge>
-          <Badge tone="neutral">{timezone}</Badge>
-          {effectiveDate ? (
-            <span className="text-subtle-foreground capitalize">
-              {formatDateKeyLong(effectiveDate)}
-            </span>
+          {service ? (
+            <div className="slots-service">
+              <span className="service-symbol" style={{ background: 'var(--accent-soft)', color: 'var(--primary)' }}>
+                <Clock3 size={17} />
+              </span>
+              <div>
+                <strong>{service.name}</strong>
+                <span>
+                  {service.durationMinutes} min
+                  {service.bufferMinutes > 0 ? ` + ${service.bufferMinutes} min buffer` : ''}
+                  {' · '}
+                  $ {service.priceCents / 100}
+                </span>
+              </div>
+              <ChevronRight size={16} />
+            </div>
+          ) : null}
+
+          {services.length === 0 && !servicesQuery.isLoading ? (
+            <div style={{ textAlign: 'center', padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+              No hay servicios activos.
+            </div>
+          ) : null}
+
+          {availabilityQuery.isFetching ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+              Calculando disponibilidad…
+            </div>
+          ) : availabilityQuery.data ? (
+            totalSlots === 0 ? (
+              <div style={{ textAlign: 'center', padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+                No hay horarios disponibles.
+              </div>
+            ) : (
+              <>
+                {PERIODS.map((period) => {
+                  const slots = groups[period];
+                  if (slots.length === 0) return null;
+                  return (
+                    <div className="slot-section" key={period}>
+                      <span className="slot-label">{period.toUpperCase()}</span>
+                      <div className="slot-list">
+                        {slots.map((slot) => (
+                          <button key={slot.startsAt} type="button">
+                            {formatTimeInZone(slot.startsAt, timezone)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="slots-footer">
+                  <span>
+                    <i /> {totalSlots} horarios disponibles
+                  </span>
+                  <span>{timezone}</span>
+                </div>
+              </>
+            )
           ) : null}
         </div>
-      ) : null}
-
-      {availabilityQuery.error ? (
-        <ErrorBanner
-          message={
-            availabilityQuery.error instanceof Error
-              ? availabilityQuery.error.message
-              : 'No pudimos calcular la disponibilidad.'
-          }
-        />
-      ) : null}
-
-      {availabilityQuery.isFetching ? (
-        <Card className="flex items-center justify-center gap-3 p-8 text-sm text-subtle-foreground">
-          <Spinner />
-          Calculando disponibilidad…
-        </Card>
-      ) : availabilityQuery.data ? (
-        totalSlots === 0 ? (
-          <EmptyState
-            icon={CalendarClock}
-            title="No hay horarios disponibles"
-            description="Probá con otra fecha, otro servicio u otro profesional. Puede ser un día sin horario cargado o fuera de la ventana de reserva."
-          />
-        ) : (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-subtle-foreground">
-              <CalendarClock className="h-4 w-4" />
-              {totalSlots} horarios disponibles
-            </div>
-
-            {PERIODS.map((period) => {
-              const slots = groups[period];
-
-              if (slots.length === 0) {
-                return null;
-              }
-
-              return (
-                <Card key={period} className="overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-border px-5 py-3">
-                    <h2 className="text-sm font-semibold text-foreground">
-                      {period}
-                    </h2>
-                    <span className="text-xs text-subtle-foreground">
-                      {slots.length} horarios
-                    </span>
-                  </div>
-                  <div className="grid gap-2 px-5 py-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {slots.map((slot) => {
-                      const names = slot.staffIds
-                        .map((id) => staffName.get(id))
-                        .filter((name): name is string => Boolean(name));
-
-                      return (
-                        <div
-                          key={slot.startsAt}
-                          className="rounded-xl border border-border bg-surface px-3 py-2.5 shadow-sm"
-                        >
-                          <div className="flex items-baseline justify-between gap-2">
-                            <p className="text-sm font-semibold text-foreground">
-                              {formatTimeInZone(slot.startsAt, timezone)}
-                            </p>
-                            <p className="text-xs text-subtle-foreground">
-                              hasta {formatTimeInZone(slot.endsAt, timezone)}
-                            </p>
-                          </div>
-                          <p className="mt-1 flex items-center gap-1 text-xs text-subtle-foreground">
-                            {staffId ? (
-                              <>
-                                <UserRound className="h-3.5 w-3.5" />
-                                {names[0] ?? 'Profesional'}
-                              </>
-                            ) : (
-                              <>
-                                <Users className="h-3.5 w-3.5" />
-                                {names.length > 0
-                                  ? names.join(' · ')
-                                  : `${slot.staffIds.length} disponibles`}
-                              </>
-                            )}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        )
-      ) : null}
+      </div>
     </>
   );
 }

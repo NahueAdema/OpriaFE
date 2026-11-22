@@ -2,35 +2,40 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Building2,
+  Bell,
   CalendarClock,
   CalendarDays,
+  ChevronDown,
+  CircleHelp,
+  ExternalLink,
   LayoutDashboard,
-  LogOut,
   Menu,
+  Moon,
+  MoreHorizontal,
   Scissors,
-  Sparkles,
-  UserRound,
+  Search,
+  Settings2,
+  Store,
+  Sun,
   Users,
   X,
 } from 'lucide-react';
+import { BrandLogo } from '@/components/brand-logo';
 import { api } from '@/lib/api';
-import { cn } from '@/lib/cn';
 import { initials } from '@/lib/utils';
 import { useAuth } from './auth-provider';
-import { ThemeToggle } from './theme-toggle';
 
 const navigation = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
-  { href: '/agenda', label: 'Agenda', icon: CalendarDays },
-  { href: '/business', label: 'Negocio', icon: Building2 },
+  { href: '/agenda', label: 'Mi agenda', icon: CalendarDays },
+  { href: '/business', label: 'Negocio', icon: Store },
   { href: '/services', label: 'Servicios', icon: Scissors },
   { href: '/staff', label: 'Equipo', icon: Users },
   { href: '/availability', label: 'Disponibilidad', icon: CalendarClock },
-  { href: '/cuenta', label: 'Mi cuenta', icon: UserRound },
+  { href: '/cuenta', label: 'Mi cuenta', icon: Settings2 },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -38,6 +43,25 @@ export function Shell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { auth, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    const current =
+      (document.documentElement.dataset.theme as 'light' | 'dark') || 'light';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDark(current === 'dark');
+  }, []);
+
+  function toggleTheme() {
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('opria.theme', next);
+    } catch {
+      // ignore
+    }
+    setDark(next === 'dark');
+  }
 
   const pendingQuery = useQuery({
     queryKey: ['appointments', 'pending-count'],
@@ -55,73 +79,64 @@ export function Shell({ children }: { children: ReactNode }) {
   const tenant = auth?.tenant;
   const user = auth?.user;
 
-  return (
-    <div className="min-h-screen bg-background lg:flex">
-      {open ? (
-        <button
-          type="button"
-          aria-label="Cerrar menú"
-          className="fixed inset-0 z-30 bg-primary-dark/40 lg:hidden"
-          onClick={() => setOpen(false)}
-        />
-      ) : null}
+  const activeNav =
+    navigation.find(
+      (item) =>
+        pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )?.label ?? 'Resumen';
 
-      <aside
-        className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-primary-dark transition-transform duration-200 lg:static lg:translate-x-0',
-          open ? 'translate-x-0' : '-translate-x-full',
-        )}
-      >
-        <div className="flex items-center justify-between px-5 py-5">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-3"
-            onClick={() => setOpen(false)}
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-white shadow-lg shadow-primary/40">
-              O
-            </span>
-            <span>
-              <span className="block text-base font-semibold text-white">
-                Opria
-              </span>
-              <span className="block text-xs text-white/70">
-                Panel del negocio
-              </span>
-            </span>
-          </Link>
+  return (
+    <div className="app-shell" data-theme={dark ? 'dark' : 'light'}>
+      <button
+        type="button"
+        aria-label="Cerrar navegación"
+        className={`mobile-scrim ${open ? 'visible' : ''}`}
+        onClick={() => setOpen(false)}
+      />
+      <aside className={`sidebar ${open ? 'sidebar-open' : ''}`}>
+        <div className="brand">
+          <div className="brand-mark">
+            <BrandLogo className="h-full w-full" />
+          </div>
+          <span>
+            Opria<span className="brand-dot">.</span>
+          </span>
           <button
-            type="button"
-            className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
             onClick={() => setOpen(false)}
             aria-label="Cerrar menú"
+            className="mobile-close"
           >
-            <X className="h-4 w-4" />
+            <X size={19} />
           </button>
         </div>
-
-        <nav className="flex-1 space-y-1 px-3 py-2">
+        <div className="workspace-label">ESPACIO DE TRABAJO</div>
+        <button className="workspace-switch">
+          <div className="workspace-avatar">
+            {(tenant?.name ?? 'O').charAt(0).toUpperCase()}
+          </div>
+          <span className="workspace-copy">
+            <strong>{tenant?.name ?? 'Mi negocio'}</strong>
+            <small>{tenant?.role ?? 'Panel'}</small>
+          </span>
+          <ChevronDown size={15} className="muted-icon" />
+        </button>
+        <div className="nav-heading">MENÚ PRINCIPAL</div>
+        <nav aria-label="Navegación principal" className="nav-list">
           {navigation.map((item) => {
             const active =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
-
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={cn(
-                  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
-                  active
-                    ? 'bg-white/12 text-white shadow-sm ring-1 ring-white/10'
-                    : 'text-white/70 hover:bg-white/8 hover:text-white',
-                )}
+                className={`nav-link ${active ? 'nav-active' : ''}`}
               >
-                <Icon className="h-4 w-4" />
-                <span className="flex-1">{item.label}</span>
+                <Icon size={18} strokeWidth={1.8} />
+                <span>{item.label}</span>
                 {item.href === '/agenda' && pendingTotal > 0 ? (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-warning px-1.5 text-[11px] font-semibold text-foreground">
+                  <span className="nav-count">
                     {pendingTotal > 99 ? '99+' : pendingTotal}
                   </span>
                 ) : null}
@@ -129,69 +144,86 @@ export function Shell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-
-        <div className="mx-3 mb-3 rounded-2xl border border-surface/10 bg-white/5 p-3">
-          <div className="flex items-center gap-2 text-xs text-white/70">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <span className="font-medium">Configuración del negocio</span>
-          </div>
-          <p className="mt-1.5 text-xs leading-5 text-white/70">
-            Servicios, equipo, horarios y disponibilidad en un solo lugar.
-          </p>
-        </div>
-
-        <div className="border-t border-surface/10 px-3 py-3">
-          <div className="flex items-center gap-3 rounded-xl px-2 py-2">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-dark text-xs font-semibold text-white/70">
-              {initials(user?.name ?? 'Opria')}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">
-                {user?.name}
-              </p>
-              <p className="truncate text-xs text-white/70">{user?.email}</p>
+        <div className="sidebar-bottom">
+          <div className="help-card">
+            <div className="help-icon">
+              <CircleHelp size={18} />
             </div>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="rounded-lg p-1.5 text-white/70 transition hover:bg-white/10 hover:text-white"
-              aria-label="Cerrar sesión"
-              title="Cerrar sesión"
-            >
-              <LogOut className="h-4 w-4" />
+            <strong>¿Necesitás ayuda?</strong>
+            <p>Estamos para acompañarte.</p>
+            <button>
+              Visitar centro de ayuda <ExternalLink size={13} />
             </button>
           </div>
+          <button className="user-profile" onClick={handleSignOut}>
+            <div className="avatar avatar-owner">
+              {initials(user?.name ?? 'Opria')}
+            </div>
+            <span className="workspace-copy">
+              <strong>{user?.name ?? 'Usuario'}</strong>
+              <small>{user?.email ?? ''}</small>
+            </span>
+            <MoreHorizontal size={19} />
+          </button>
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-surface/80 px-4 backdrop-blur lg:px-8">
+      <div className="main-column">
+        <header className="topbar">
           <button
-            type="button"
-            className="rounded-lg p-2 text-subtle-foreground transition hover:bg-accent-soft hover:text-foreground lg:hidden"
-            onClick={() => setOpen(true)}
+            className="mobile-menu"
             aria-label="Abrir menú"
+            onClick={() => setOpen(true)}
           >
-            <Menu className="h-5 w-5" />
+            <Menu size={20} />
           </button>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">
-              {tenant?.name}
-            </p>
-            <p className="truncate text-xs text-subtle-foreground">
-              opria.app/{tenant?.slug}
-            </p>
+          <div className="breadcrumbs">
+            <span>{tenant?.name ?? 'Mi negocio'}</span>
+            <span className="crumb-slash">/</span>
+            <strong>{activeNav}</strong>
           </div>
-          <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
-            <span className="hidden rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground capitalize sm:inline-flex">
-              {tenant?.role}
-            </span>
+          <div className="top-actions">
+            <button className="icon-button search-button" aria-label="Buscar">
+              <Search size={18} />
+              <span>Buscar</span>
+              <kbd>⌘ K</kbd>
+            </button>
+            <button
+              className="icon-button notification-button"
+              aria-label="Notificaciones"
+            >
+              <Bell size={18} />
+              <i />
+            </button>
+            <button
+              className="icon-button theme-toggle"
+              onClick={toggleTheme}
+              aria-label={dark ? 'Activar modo claro' : 'Activar modo noche'}
+              aria-pressed={dark}
+              title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo noche'}
+            >
+              {dark ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+            <div className="top-divider" />
+            <button
+              className="avatar avatar-owner top-avatar"
+              aria-label="Perfil"
+              onClick={() => router.push('/cuenta')}
+            >
+              {initials(user?.name ?? 'Opria')}
+            </button>
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
-          <div className="mx-auto max-w-6xl space-y-6">{children}</div>
+        <main className="page-content">
+          {children}
+          <footer className="app-footer">
+            <span>© 2024 opria · Hecho para que tu negocio florezca</span>
+            <span>
+              <a href="#privacidad">Privacidad</a>
+              <a href="#ayuda">Ayuda</a>
+            </span>
+          </footer>
         </main>
       </div>
     </div>

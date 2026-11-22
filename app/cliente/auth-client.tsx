@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight, CalendarCheck, Sparkles } from 'lucide-react';
+import { BrandLogo } from '@/components/brand-logo';
 import { useCustomerAuth } from '@/components/customer-auth-provider';
 import { ApiError } from '@/lib/api';
 import {
@@ -82,14 +83,11 @@ export function CustomerAuthClient({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-surface">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-10 sm:px-6">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-white shadow-lg shadow-primary">
-              O
-            </span>
-            <span className="text-lg font-semibold text-foreground">Opria</span>
+          <Link href="/" className="flex h-10 items-center" aria-label="Opria">
+            <BrandLogo variant="full" className="h-9" />
           </Link>
           <Link
             href="/cliente"

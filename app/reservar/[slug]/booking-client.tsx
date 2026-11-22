@@ -52,6 +52,7 @@ import {
   Input,
   Spinner,
   Textarea,
+  WakingUpHint,
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -258,9 +259,12 @@ export function BookingClient({ slug }: { slug: string }) {
 
   if (businessQuery.isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-subtle-foreground">
-        <Spinner className="mr-3" />
-        Cargando el negocio…
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background text-sm text-subtle-foreground">
+        <div className="flex items-center gap-3">
+          <Spinner />
+          Cargando el negocio…
+        </div>
+        <WakingUpHint />
       </div>
     );
   }
@@ -296,7 +300,7 @@ export function BookingClient({ slug }: { slug: string }) {
     const hasContact = Boolean(business.contactPhone || business.contactEmail);
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-success via-background to-white px-4 py-10">
+      <div className="min-h-screen bg-gradient-to-b from-success via-background to-surface px-4 py-10">
         <div className="mx-auto w-full max-w-xl space-y-5">
           <Link
             href="/reservar"
@@ -433,7 +437,7 @@ export function BookingClient({ slug }: { slug: string }) {
   const canSubmit = Boolean(service && selectedDate && selectedSlot);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-surface">
       <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-4">

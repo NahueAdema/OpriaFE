@@ -4,21 +4,11 @@ import { useEffect, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Building2, Mail, Save, Shield } from 'lucide-react';
+import { Save } from 'lucide-react';
+import { ErrorBanner, SuccessBanner, WakingUpHint } from '@/components/ui';
 import { api } from '@/lib/api';
 import { businessFormSchema, type BusinessFormValues } from '@/lib/schemas';
 import { TIMEZONES } from '@/lib/utils';
-import {
-  Button,
-  Card,
-  ErrorBanner,
-  Field,
-  Input,
-  PageHeader,
-  Select,
-  Spinner,
-  SuccessBanner,
-} from '@/components/ui';
 
 const DEFAULTS: BusinessFormValues = {
   name: '',
@@ -105,31 +95,44 @@ export default function BusinessPage() {
 
   if (businessQuery.isLoading) {
     return (
-      <Card className="flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
-        <Spinner />
-        Cargando configuración…
-      </Card>
+      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 11 }}>
+        <span className="button button-secondary" style={{ pointerEvents: 'none' }}>Cargando…</span>
+        <WakingUpHint />
+      </div>
     );
   }
 
   if (businessQuery.error) {
     return (
       <ErrorBanner
-        message={
-          businessQuery.error instanceof Error
-            ? businessQuery.error.message
-            : 'No pudimos cargar la configuración.'
-        }
+        message={businessQuery.error instanceof Error ? businessQuery.error.message : 'No pudimos cargar la configuración.'}
       />
     );
   }
 
+  const business = businessQuery.data!;
+  const errors = form.formState.errors;
+
   return (
     <>
-      <PageHeader
-        title="Negocio"
-        description="Perfil público, contacto y políticas que aplica el motor de reservas."
-      />
+      <div className="section-title-row">
+        <div>
+          <div className="eyebrow">TU MARCA, TU ESPACIO</div>
+          <h1>Negocio</h1>
+          <p>Personalizá la experiencia que ven tus clientes.</p>
+        </div>
+        <div className="title-action">
+          <button
+            type="submit"
+            form="business-form"
+            className="button button-primary"
+            disabled={mutation.isPending}
+          >
+            <Save size={16} />
+            {mutation.isPending ? 'Guardando…' : 'Guardar cambios'}
+          </button>
+        </div>
+      </div>
 
       {mutation.isSuccess ? (
         <SuccessBanner message="Configuración guardada." />
@@ -137,237 +140,181 @@ export default function BusinessPage() {
 
       {mutation.error ? (
         <ErrorBanner
-          message={
-            mutation.error instanceof Error
-              ? mutation.error.message
-              : 'No pudimos guardar los cambios.'
-          }
+          message={mutation.error instanceof Error ? mutation.error.message : 'No pudimos guardar los cambios.'}
         />
       ) : null}
 
-      <form
-        onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
-        className="space-y-4"
-      >
-        <Card>
-          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
-              <Building2 className="h-4 w-4" />
-            </span>
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">Perfil</h2>
-              <p className="text-xs text-subtle-foreground">
-                Nombre, URL y zona horaria del negocio.
-              </p>
+      <form id="business-form" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <div className="settings-layout">
+          <div className="settings-content">
+            <div className="settings-tabs">
+              <button type="button" className="settings-tab active">Información general</button>
+              <button type="button" className="settings-tab">Apariencia</button>
+              <button type="button" className="settings-tab">Enlace de reservas</button>
+              <button type="button" className="settings-tab">Notificaciones</button>
+            </div>
+
+            <div className="form-card">
+              <div className="form-card-heading">
+                <h2>Identidad del negocio</h2>
+                <p>Así se verá tu espacio en la página de reservas.</p>
+              </div>
+              <div className="brand-edit">
+                <div className="big-brand-avatar">B</div>
+                <div>
+                  <strong>Logo del negocio</strong>
+                  <p>PNG o JPG. Recomendado: 512 × 512 px.</p>
+                  <button type="button" className="small-outline">Cambiar logo</button>
+                </div>
+              </div>
+              <div className="form-grid">
+                <label className="form-field">
+                  Nombre del negocio
+                  <input placeholder="Bruma Estudio" {...form.register('name')} />
+                  {errors.name && <span className="text-error" style={{ fontSize: 9 }}>{errors.name.message}</span>}
+                </label>
+                <label className="form-field">
+                  Slug
+                  <input placeholder="bruma-estudio" {...form.register('slug')} />
+                  {errors.slug && <span className="text-error" style={{ fontSize: 9 }}>{errors.slug.message}</span>}
+                </label>
+                <label className="form-field">
+                  Zona horaria
+                  <select {...form.register('timezone')}>
+                    {timezoneOptions.map((timezone) => (
+                      <option key={timezone} value={timezone}>{timezone}</option>
+                    ))}
+                  </select>
+                  {errors.timezone && <span className="text-error" style={{ fontSize: 9 }}>{errors.timezone.message}</span>}
+                </label>
+                <label className="form-field">
+                  Logo (URL)
+                  <input placeholder="https://…/logo.png" {...form.register('logoUrl')} />
+                  {errors.logoUrl && <span className="text-error" style={{ fontSize: 9 }}>{errors.logoUrl.message}</span>}
+                </label>
+                <label className="form-field full-field">
+                  Descripción
+                  <textarea placeholder="Un espacio para pausar, renovarte y sentirte bien." />
+                </label>
+                <label className="form-field">
+                  Ciudad
+                  <input placeholder="Buenos Aires" {...form.register('city')} />
+                  {errors.city && <span className="text-error" style={{ fontSize: 9 }}>{errors.city.message}</span>}
+                </label>
+                <label className="form-field">
+                  Dirección
+                  <input placeholder="Gorriti 4820, Palermo" {...form.register('address')} />
+                  {errors.address && <span className="text-error" style={{ fontSize: 9 }}>{errors.address.message}</span>}
+                </label>
+                <label className="form-field">
+                  Correo de contacto
+                  <input type="email" placeholder="hola@brumaestudio.com" {...form.register('contactEmail')} />
+                  {errors.contactEmail && <span className="text-error" style={{ fontSize: 9 }}>{errors.contactEmail.message}</span>}
+                </label>
+                <label className="form-field">
+                  Teléfono
+                  <input placeholder="+54 9 11 4567-8910" {...form.register('contactPhone')} />
+                  {errors.contactPhone && <span className="text-error" style={{ fontSize: 9 }}>{errors.contactPhone.message}</span>}
+                </label>
+              </div>
+            </div>
+
+            <div className="form-card">
+              <div className="form-card-heading">
+                <h2>Políticas de reserva</h2>
+                <p>Reglas que aplica el motor al calcular disponibilidad.</p>
+              </div>
+              <div className="form-grid">
+                <label className="form-field">
+                  Anticipación mínima (minutos)
+                  <input type="number" min={0} max={43200} {...form.register('bookingMinAdvanceMinutes', { valueAsNumber: true })} />
+                  {errors.bookingMinAdvanceMinutes && <span className="text-error" style={{ fontSize: 9 }}>{errors.bookingMinAdvanceMinutes.message}</span>}
+                </label>
+                <label className="form-field">
+                  Ventana de reserva (días)
+                  <input type="number" min={1} max={365} {...form.register('bookingMaxAdvanceDays', { valueAsNumber: true })} />
+                  {errors.bookingMaxAdvanceDays && <span className="text-error" style={{ fontSize: 9 }}>{errors.bookingMaxAdvanceDays.message}</span>}
+                </label>
+                <label className="form-field">
+                  Cancelación sin cargo (horas)
+                  <input type="number" min={0} max={720} {...form.register('cancellationHours', { valueAsNumber: true })} />
+                  {errors.cancellationHours && <span className="text-error" style={{ fontSize: 9 }}>{errors.cancellationHours.message}</span>}
+                </label>
+                <label className="form-field">
+                  Seña al cancelar tarde
+                  <select {...form.register('cancellationDepositPolicy')}>
+                    <option value="retain">Retener la seña</option>
+                    <option value="refund">Devolver la seña</option>
+                  </select>
+                  {errors.cancellationDepositPolicy && <span className="text-error" style={{ fontSize: 9 }}>{errors.cancellationDepositPolicy.message}</span>}
+                </label>
+              </div>
             </div>
           </div>
-          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
-            <Field
-              label="Nombre del negocio"
-              htmlFor="business-name"
-              error={form.formState.errors.name?.message}
-            >
-              <Input
-                id="business-name"
-                placeholder="Estudio Aurora"
-                {...form.register('name')}
-              />
-            </Field>
 
-            <Field
-              label="Slug"
-              htmlFor="business-slug"
-              hint="Identificador único en opria.app."
-              error={form.formState.errors.slug?.message}
-            >
-              <Input
-                id="business-slug"
-                placeholder="estudio-aurora"
-                {...form.register('slug')}
-              />
-            </Field>
-
-            <Field
-              label="Zona horaria"
-              htmlFor="business-timezone"
-              hint="Los horarios se interpretan en esta zona."
-              error={form.formState.errors.timezone?.message}
-            >
-              <Select id="business-timezone" {...form.register('timezone')}>
-                {timezoneOptions.map((timezone) => (
-                  <option key={timezone} value={timezone}>
-                    {timezone}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-
-            <Field
-              label="Logo (URL)"
-              htmlFor="business-logo"
-              hint="Opcional. Debe ser una URL pública."
-              error={form.formState.errors.logoUrl?.message}
-            >
-              <Input
-                id="business-logo"
-                placeholder="https://…/logo.png"
-                {...form.register('logoUrl')}
-              />
-            </Field>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
-              <Mail className="h-4 w-4" />
-            </span>
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">Contacto</h2>
-              <p className="text-xs text-subtle-foreground">
-                Datos visibles para tus clientes.
-              </p>
+          <div className="account-side">
+            <div className="preview-card">
+              <div className="preview-label">VISTA PREVIA</div>
+              <div className="preview-cover">
+                <div className="preview-brand">
+                  {business.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={business.logoUrl}
+                      alt=""
+                      className="h-full w-full rounded-[inherit] object-cover"
+                    />
+                  ) : (
+                    business.name.slice(0, 1).toUpperCase()
+                  )}
+                </div>
+              </div>
+              <div className="preview-details">
+                <div className="preview-badge">TU NEGOCIO</div>
+                <h3>{business.name}</h3>
+                <p>Así verán tu página tus clientes.</p>
+                <div className="preview-meta">
+                  {business.city || business.address ? (
+                    <span>📍 {[business.address, business.city].filter(Boolean).join(', ')}</span>
+                  ) : null}
+                  {business.contactPhone ? (
+                    <span>📞 {business.contactPhone}</span>
+                  ) : null}
+                </div>
+                <span className="preview-cta">Reservar turno</span>
+                <small>Así verán tu página tus clientes</small>
+              </div>
+              <div className="preview-link">
+                <div>
+                  <strong>Tu enlace de reservas</strong>
+                  <span>Compartilo con tus clientes</span>
+                </div>
+                <a
+                  className="text-link"
+                  href={`/reservar/${business.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Abrir
+                </a>
+              </div>
+            </div>
+            <div className="form-card appearance-card">
+              <div className="form-card-heading">
+                <h2>Apariencia</h2>
+                <p>Los colores de tu panel se adaptan al tema claro u oscuro.</p>
+              </div>
+              <div className="appearance-row">
+                <div>
+                  <strong>Tema del panel</strong>
+                  <span>Podés cambiarlo desde el ícono de luna en la barra superior.</span>
+                </div>
+                <span className="button button-secondary" style={{ pointerEvents: 'none' }}>
+                  Automático
+                </span>
+              </div>
             </div>
           </div>
-          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
-            <Field
-              label="Ciudad"
-              htmlFor="business-city"
-              hint="Se usa para filtrar el buscador público."
-              error={form.formState.errors.city?.message}
-            >
-              <Input
-                id="business-city"
-                placeholder="Buenos Aires"
-                {...form.register('city')}
-              />
-            </Field>
-
-            <Field
-              label="Dirección"
-              htmlFor="business-address"
-              error={form.formState.errors.address?.message}
-            >
-              <Input
-                id="business-address"
-                placeholder="Av. Siempre Viva 742"
-                {...form.register('address')}
-              />
-            </Field>
-
-            <Field
-              label="Email de contacto"
-              htmlFor="business-email"
-              error={form.formState.errors.contactEmail?.message}
-            >
-              <Input
-                id="business-email"
-                type="email"
-                placeholder="hola@negocio.com"
-                {...form.register('contactEmail')}
-              />
-            </Field>
-
-            <Field
-              label="Teléfono"
-              htmlFor="business-phone"
-              error={form.formState.errors.contactPhone?.message}
-            >
-              <Input
-                id="business-phone"
-                placeholder="+54 11 5555 5555"
-                {...form.register('contactPhone')}
-              />
-            </Field>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-start gap-3 border-b border-border px-6 py-5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-primary">
-              <Shield className="h-4 w-4" />
-            </span>
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">
-                Políticas de reserva
-              </h2>
-              <p className="text-xs text-subtle-foreground">
-                Reglas que aplica el motor al calcular disponibilidad.
-              </p>
-            </div>
-          </div>
-          <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
-            <Field
-              label="Anticipación mínima (minutos)"
-              htmlFor="business-min-advance"
-              hint="Tiempo mínimo entre ahora y el turno."
-              error={form.formState.errors.bookingMinAdvanceMinutes?.message}
-            >
-              <Input
-                id="business-min-advance"
-                type="number"
-                min={0}
-                max={43200}
-                {...form.register('bookingMinAdvanceMinutes', {
-                  valueAsNumber: true,
-                })}
-              />
-            </Field>
-
-            <Field
-              label="Ventana de reserva (días)"
-              htmlFor="business-max-days"
-              hint="Hasta cuántos días a futuro se puede reservar."
-              error={form.formState.errors.bookingMaxAdvanceDays?.message}
-            >
-              <Input
-                id="business-max-days"
-                type="number"
-                min={1}
-                max={365}
-                {...form.register('bookingMaxAdvanceDays', {
-                  valueAsNumber: true,
-                })}
-              />
-            </Field>
-
-            <Field
-              label="Cancelación sin cargo (horas)"
-              htmlFor="business-cancel-hours"
-              error={form.formState.errors.cancellationHours?.message}
-            >
-              <Input
-                id="business-cancel-hours"
-                type="number"
-                min={0}
-                max={720}
-                {...form.register('cancellationHours', {
-                  valueAsNumber: true,
-                })}
-              />
-            </Field>
-
-            <Field
-              label="Seña al cancelar tarde"
-              htmlFor="business-cancel-policy"
-              error={form.formState.errors.cancellationDepositPolicy?.message}
-            >
-              <Select
-                id="business-cancel-policy"
-                {...form.register('cancellationDepositPolicy')}
-              >
-                <option value="retain">Retener la seña</option>
-                <option value="refund">Devolver la seña</option>
-              </Select>
-            </Field>
-          </div>
-        </Card>
-
-        <div className="flex justify-end">
-          <Button type="submit" loading={mutation.isPending}>
-            <Save className="h-4 w-4" />
-            Guardar cambios
-          </Button>
         </div>
       </form>
     </>

@@ -17,6 +17,7 @@ import {
   UserRound,
   X,
 } from 'lucide-react';
+import { BrandLogo } from '@/components/brand-logo';
 
 const features = [
   {
@@ -58,11 +59,8 @@ export default function Page() {
     <main className="min-h-screen overflow-hidden bg-[var(--background)] text-[var(--text-primary)] selection:bg-[var(--accent-soft)]">
       <div className="absolute inset-x-0 top-0 -z-0 h-[680px] bg-[radial-gradient(circle_at_72%_7%,rgba(205,196,255,.5),transparent_34%),radial-gradient(circle_at_18%_4%,rgba(255,224,192,.42),transparent_30%)]" />
       <nav className="relative z-10 mx-auto flex max-w-[1200px] items-center justify-between px-6 py-6 lg:px-8">
-        <a href="#inicio" className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-[12px] bg-[var(--primary-hover)] text-white shadow-[0_8px_20px_rgba(112,105,199,.23)]">
-            <Sparkles size={18} />
-          </span>
-          <span className="text-[18px] font-bold tracking-[-.05em]">Opria</span>
+        <a href="#inicio" className="flex items-center" aria-label="Opria">
+          <BrandLogo variant="full" className="h-9" priority />
         </a>
         <div className="hidden items-center gap-8 text-[13px] font-semibold text-[var(--text-secondary)] md:flex">
           <a href="#producto" className="transition hover:text-[var(--primary-hover)]">
@@ -217,11 +215,8 @@ export default function Page() {
             <div className="relative rounded-[24px] border border-surface/80 bg-surface/80 p-3 shadow-[0_28px_70px_rgba(58,48,102,.16)] backdrop-blur lg:rotate-[1.5deg]">
               <div className="overflow-hidden rounded-[17px] border border-[var(--border)] bg-[var(--background)]">
                 <div className="flex items-center justify-between border-b border-[var(--border)] bg-surface px-5 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="grid size-7 place-items-center rounded-lg bg-[var(--primary-hover)] text-white">
-                      <Sparkles size={13} />
-                    </span>
-                    <span className="text-[12px] font-bold">Opria</span>
+                  <div className="flex h-7 items-center">
+                    <BrandLogo variant="full" className="h-6" />
                   </div>
                   <span className="rounded-full bg-[var(--background)] px-2.5 py-1 text-[9px] font-bold text-[var(--success)]">
                     ● Online
@@ -284,7 +279,7 @@ export default function Page() {
                       ))}
                     </div>
                   </div>
-                  <div className="rounded-xl bg-[var(--text-primary)] p-4 text-white">
+                  <div className="rounded-xl bg-foreground text-background p-4">
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--accent)]">
                       <Sparkles size={12} /> Asistente IA
                     </div>
@@ -371,7 +366,7 @@ export default function Page() {
         className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8"
       >
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="rounded-[28px] bg-[var(--text-primary)] p-8 text-white shadow-[0_20px_50px_rgba(36,37,63,.14)]">
+          <div className="rounded-[28px] bg-foreground text-background p-8 shadow-[0_20px_50px_rgba(36,37,63,.14)]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-[var(--accent)]">
                 CONVERSACIÓN REAL
@@ -384,14 +379,14 @@ export default function Page() {
               <div className="max-w-[240px] self-end rounded-2xl rounded-br-sm bg-[var(--primary-hover)] px-4 py-3">
                 Hola, ¿tenés disponibilidad para corte mañana?
               </div>
-              <div className="max-w-[260px] rounded-2xl rounded-bl-sm bg-surface/10 px-4 py-3 leading-relaxed text-[var(--border)]">
+              <div className="max-w-[260px] rounded-2xl rounded-bl-sm bg-surface/10 px-4 py-3 leading-relaxed text-background/80">
                 ¡Hola! Sí, tengo un lugar a las 10:30 o 16:00. ¿Cuál te queda
                 mejor?
               </div>
               <div className="max-w-[215px] self-end rounded-2xl rounded-br-sm bg-[var(--primary-hover)] px-4 py-3">
                 A las 16:00, por favor.
               </div>
-              <div className="max-w-[260px] rounded-2xl rounded-bl-sm bg-surface/10 px-4 py-3 leading-relaxed text-[var(--border)]">
+              <div className="max-w-[260px] rounded-2xl rounded-bl-sm bg-surface/10 px-4 py-3 leading-relaxed text-background/80">
                 Listo. Tu turno quedó confirmado. Te voy a recordar el día
                 anterior.
               </div>
@@ -461,7 +456,7 @@ export default function Page() {
           onClick={(event) => {
             if (event.target === event.currentTarget) setDemoOpen(false);
           }}
-          className="fixed inset-0 z-50 grid place-items-center bg-[var(--text-primary)]/50 p-6 backdrop-blur-sm"
+          className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-6 backdrop-blur-sm"
         >
           <div className="w-full max-w-md rounded-[24px] bg-surface p-7 shadow-2xl">
             <div className="flex items-center justify-between">
@@ -478,7 +473,7 @@ export default function Page() {
               La IA recibe la consulta, encuentra un espacio disponible y
               confirma el turno automáticamente. Vos solo ves crecer tu agenda.
             </p>
-            <div className="mt-6 rounded-2xl bg-[var(--text-primary)] p-5 text-center text-white">
+            <div className="mt-6 rounded-2xl bg-foreground text-background p-5 text-center">
               <Sparkles className="mx-auto text-[var(--accent)]" size={24} />
               <p className="mt-3 text-sm font-bold">
                 Tu asistente está listo para trabajar.

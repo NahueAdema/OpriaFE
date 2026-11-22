@@ -29,7 +29,7 @@ const highlights = [
 
 export default function ClientEntryPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-surface">
       <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 py-10 sm:px-6">
         <CustomerHeader />
 

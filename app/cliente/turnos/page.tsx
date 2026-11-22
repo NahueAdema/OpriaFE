@@ -34,6 +34,7 @@ import {
   Modal,
   Spinner,
   SuccessBanner,
+  WakingUpHint,
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -115,7 +116,7 @@ export default function CustomerAppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-accent-soft via-background to-surface">
       <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
         <CustomerHeader />
 
@@ -157,9 +158,12 @@ export default function CustomerAppointmentsPage() {
         ) : null}
 
         {loading ? (
-          <Card className="mt-6 flex items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
-            <Spinner />
-            Cargando tus turnos…
+          <Card className="mt-6 flex flex-col items-center justify-center gap-3 p-10 text-sm text-subtle-foreground">
+            <div className="flex items-center gap-3">
+              <Spinner />
+              Cargando tus turnos…
+            </div>
+            <WakingUpHint />
           </Card>
         ) : null}
 

@@ -210,11 +210,20 @@ export function Spinner({ className }: { className?: string }) {
   );
 }
 
+export function WakingUpHint({ className }: { className?: string }) {
+  return (
+    <p className={cn('text-center text-xs text-subtle-foreground', className)}>
+      Si tarda un poco, es que nuestro servidor se está despertando de la siesta ☕
+    </p>
+  );
+}
+
 export function FullScreenLoader({ label }: { label?: string }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background text-subtle-foreground">
       <Spinner className="h-7 w-7" />
       <p className="text-sm">{label ?? 'Cargando…'}</p>
+      <WakingUpHint />
     </div>
   );
 }
