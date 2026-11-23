@@ -1,0 +1,14 @@
+# Texto: normalizar a LF dentro del repo (Git ajusta el checkout según la plataforma).
+* text=auto eol=lf
+
+# Binarios: nunca normalizar ni aplicar diff.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary

@@ -1,0 +1,40 @@
+name: Bug
+description: Reportar un comportamiento incorrecto
+title: 'fix: '
+labels: ['type:bug']
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Qué pasó
+      description: Descripción clara y breve.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Qué esperabas
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Ir a …
+        2. Hacer clic en …
+        3. Ver el error
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Entorno
+      placeholder: local / Netlify + Render (commit …)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o capturas
+      render: shell

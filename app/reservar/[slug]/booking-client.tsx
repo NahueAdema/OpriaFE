@@ -588,7 +588,7 @@ export function BookingClient({ slug }: { slug: string }) {
                     {WEEKDAY_HEADERS.map((label) => (
                       <span
                         key={label}
-                        className="pb-1 text-[11px] font-medium tracking-wide text-subtle-foreground uppercase"
+                        className="pb-1 text-xs font-medium tracking-wide text-subtle-foreground uppercase"
                       >
                         {label}
                       </span>

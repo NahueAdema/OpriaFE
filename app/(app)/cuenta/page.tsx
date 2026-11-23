@@ -139,7 +139,7 @@ export default function AccountPage() {
                     </button>
                   </div>
                   {errors.currentPassword && (
-                    <span className="text-error" style={{ fontSize: 9 }}>{errors.currentPassword.message}</span>
+                    <span className="text-error" style={{ fontSize: 11 }}>{errors.currentPassword.message}</span>
                   )}
                 </label>
                 <label className="form-field">
@@ -150,7 +150,7 @@ export default function AccountPage() {
                     {...form.register('newPassword')}
                   />
                   {errors.newPassword && (
-                    <span className="text-error" style={{ fontSize: 9 }}>{errors.newPassword.message}</span>
+                    <span className="text-error" style={{ fontSize: 11 }}>{errors.newPassword.message}</span>
                   )}
                 </label>
                 <label className="form-field">
@@ -161,7 +161,7 @@ export default function AccountPage() {
                     {...form.register('confirmPassword')}
                   />
                   {errors.confirmPassword && (
-                    <span className="text-error" style={{ fontSize: 9 }}>{errors.confirmPassword.message}</span>
+                    <span className="text-error" style={{ fontSize: 11 }}>{errors.confirmPassword.message}</span>
                   )}
                 </label>
               </div>

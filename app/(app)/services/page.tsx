@@ -155,7 +155,7 @@ export default function ServicesPage() {
       </div>
 
       {servicesQuery.isLoading ? (
-        <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 11 }}>
+        <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 13 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Spinner /> Cargando servicios…
           </div>
@@ -167,7 +167,7 @@ export default function ServicesPage() {
         />
       ) : services.length === 0 ? (
         <div className="form-card" style={{ textAlign: 'center', padding: 40 }}>
-          <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 12 }}>Todavía no hay servicios. Creá tu primer servicio para que tus clientes puedan reservar.</p>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 12 }}>Todavía no hay servicios. Creá tu primer servicio para que tus clientes puedan reservar.</p>
           <button type="button" className="button button-primary" onClick={() => setEditing({ service: null })}>
             <Plus size={17} /> Crear servicio
           </button>
@@ -213,11 +213,11 @@ export default function ServicesPage() {
                   <i />
                 </button>
               </div>
-              <div style={{ marginTop: 8, display: 'flex', gap: 6, fontSize: 9, color: 'var(--text-muted)' }}>
+              <div style={{ marginTop: 8, display: 'flex', gap: 6, fontSize: 11, color: 'var(--text-muted)' }}>
                 <span>{depositLabel(service)}</span>
                 <button
                   type="button"
-                  style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', fontSize: 9 }} className="text-error"
+                  style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', fontSize: 11 }} className="text-error"
                   onClick={() => handleDeactivate(service)}
                   disabled={!service.active}
                 >

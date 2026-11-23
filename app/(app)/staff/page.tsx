@@ -154,7 +154,7 @@ export default function StaffPage() {
               >
                 <span className="professional-cell">
                   <span
-                    className={`grid size-8 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white ${
+                    className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-semibold text-white ${
                       ['bg-primary', 'bg-warning', 'bg-success'][index % 3]
                     }`}
                   >

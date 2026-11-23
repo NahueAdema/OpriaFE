@@ -95,7 +95,7 @@ export default function BusinessPage() {
 
   if (businessQuery.isLoading) {
     return (
-      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 11 }}>
+      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 13 }}>
         <span className="button button-secondary" style={{ pointerEvents: 'none' }}>Cargando…</span>
         <WakingUpHint />
       </div>
@@ -171,12 +171,12 @@ export default function BusinessPage() {
                 <label className="form-field">
                   Nombre del negocio
                   <input placeholder="Bruma Estudio" {...form.register('name')} />
-                  {errors.name && <span className="text-error" style={{ fontSize: 9 }}>{errors.name.message}</span>}
+                  {errors.name && <span className="text-error" style={{ fontSize: 11 }}>{errors.name.message}</span>}
                 </label>
                 <label className="form-field">
                   Slug
                   <input placeholder="bruma-estudio" {...form.register('slug')} />
-                  {errors.slug && <span className="text-error" style={{ fontSize: 9 }}>{errors.slug.message}</span>}
+                  {errors.slug && <span className="text-error" style={{ fontSize: 11 }}>{errors.slug.message}</span>}
                 </label>
                 <label className="form-field">
                   Zona horaria
@@ -185,12 +185,12 @@ export default function BusinessPage() {
                       <option key={timezone} value={timezone}>{timezone}</option>
                     ))}
                   </select>
-                  {errors.timezone && <span className="text-error" style={{ fontSize: 9 }}>{errors.timezone.message}</span>}
+                  {errors.timezone && <span className="text-error" style={{ fontSize: 11 }}>{errors.timezone.message}</span>}
                 </label>
                 <label className="form-field">
                   Logo (URL)
                   <input placeholder="https://…/logo.png" {...form.register('logoUrl')} />
-                  {errors.logoUrl && <span className="text-error" style={{ fontSize: 9 }}>{errors.logoUrl.message}</span>}
+                  {errors.logoUrl && <span className="text-error" style={{ fontSize: 11 }}>{errors.logoUrl.message}</span>}
                 </label>
                 <label className="form-field full-field">
                   Descripción
@@ -199,22 +199,22 @@ export default function BusinessPage() {
                 <label className="form-field">
                   Ciudad
                   <input placeholder="Buenos Aires" {...form.register('city')} />
-                  {errors.city && <span className="text-error" style={{ fontSize: 9 }}>{errors.city.message}</span>}
+                  {errors.city && <span className="text-error" style={{ fontSize: 11 }}>{errors.city.message}</span>}
                 </label>
                 <label className="form-field">
                   Dirección
                   <input placeholder="Gorriti 4820, Palermo" {...form.register('address')} />
-                  {errors.address && <span className="text-error" style={{ fontSize: 9 }}>{errors.address.message}</span>}
+                  {errors.address && <span className="text-error" style={{ fontSize: 11 }}>{errors.address.message}</span>}
                 </label>
                 <label className="form-field">
                   Correo de contacto
                   <input type="email" placeholder="hola@brumaestudio.com" {...form.register('contactEmail')} />
-                  {errors.contactEmail && <span className="text-error" style={{ fontSize: 9 }}>{errors.contactEmail.message}</span>}
+                  {errors.contactEmail && <span className="text-error" style={{ fontSize: 11 }}>{errors.contactEmail.message}</span>}
                 </label>
                 <label className="form-field">
                   Teléfono
                   <input placeholder="+54 9 11 4567-8910" {...form.register('contactPhone')} />
-                  {errors.contactPhone && <span className="text-error" style={{ fontSize: 9 }}>{errors.contactPhone.message}</span>}
+                  {errors.contactPhone && <span className="text-error" style={{ fontSize: 11 }}>{errors.contactPhone.message}</span>}
                 </label>
               </div>
             </div>
@@ -228,17 +228,17 @@ export default function BusinessPage() {
                 <label className="form-field">
                   Anticipación mínima (minutos)
                   <input type="number" min={0} max={43200} {...form.register('bookingMinAdvanceMinutes', { valueAsNumber: true })} />
-                  {errors.bookingMinAdvanceMinutes && <span className="text-error" style={{ fontSize: 9 }}>{errors.bookingMinAdvanceMinutes.message}</span>}
+                  {errors.bookingMinAdvanceMinutes && <span className="text-error" style={{ fontSize: 11 }}>{errors.bookingMinAdvanceMinutes.message}</span>}
                 </label>
                 <label className="form-field">
                   Ventana de reserva (días)
                   <input type="number" min={1} max={365} {...form.register('bookingMaxAdvanceDays', { valueAsNumber: true })} />
-                  {errors.bookingMaxAdvanceDays && <span className="text-error" style={{ fontSize: 9 }}>{errors.bookingMaxAdvanceDays.message}</span>}
+                  {errors.bookingMaxAdvanceDays && <span className="text-error" style={{ fontSize: 11 }}>{errors.bookingMaxAdvanceDays.message}</span>}
                 </label>
                 <label className="form-field">
                   Cancelación sin cargo (horas)
                   <input type="number" min={0} max={720} {...form.register('cancellationHours', { valueAsNumber: true })} />
-                  {errors.cancellationHours && <span className="text-error" style={{ fontSize: 9 }}>{errors.cancellationHours.message}</span>}
+                  {errors.cancellationHours && <span className="text-error" style={{ fontSize: 11 }}>{errors.cancellationHours.message}</span>}
                 </label>
                 <label className="form-field">
                   Seña al cancelar tarde
@@ -246,7 +246,7 @@ export default function BusinessPage() {
                     <option value="retain">Retener la seña</option>
                     <option value="refund">Devolver la seña</option>
                   </select>
-                  {errors.cancellationDepositPolicy && <span className="text-error" style={{ fontSize: 9 }}>{errors.cancellationDepositPolicy.message}</span>}
+                  {errors.cancellationDepositPolicy && <span className="text-error" style={{ fontSize: 11 }}>{errors.cancellationDepositPolicy.message}</span>}
                 </label>
               </div>
             </div>

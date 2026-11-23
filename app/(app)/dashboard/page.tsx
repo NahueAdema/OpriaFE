@@ -128,7 +128,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 11 }}>
+      <div className="form-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 40, color: 'var(--text-secondary)', fontSize: 13 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Spinner /> Cargando resumen…
         </div>
@@ -253,8 +253,8 @@ export default function DashboardPage() {
                     <Circle size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-primary)' }}>{step.label}</p>
-                    <p style={{ fontSize: 9, color: 'var(--text-muted)' }}>{step.description}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{step.label}</p>
+                    <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{step.description}</p>
                   </div>
                   <ArrowRight size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                 </Link>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {business ? (
-            <dl style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 0 0', fontSize: 11 }}>
+            <dl style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 0 0', fontSize: 13 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                 <dt style={{ color: 'var(--text-secondary)' }}>Negocio</dt>
                 <dd style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>{business.name}</dd>
@@ -300,10 +300,10 @@ export default function DashboardPage() {
               </div>
             </dl>
           ) : (
-            <p style={{ padding: '12px 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>Todavía no pudimos cargar el negocio.</p>
+            <p style={{ padding: '12px 0 0', fontSize: 13, color: 'var(--text-secondary)' }}>Todavía no pudimos cargar el negocio.</p>
           )}
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12, marginTop: 12 }}>
-            <Link href="/business" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 600, color: 'var(--primary-hover)', textDecoration: 'none' }}>
+            <Link href="/business" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: 'var(--primary-hover)', textDecoration: 'none' }}>
               Editar configuración <ArrowRight size={13} />
             </Link>
           </div>
@@ -320,7 +320,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           {upcoming.length === 0 ? (
-            <p style={{ padding: '16px 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
+            <p style={{ padding: '16px 0 0', fontSize: 13, color: 'var(--text-secondary)' }}>
               No hay turnos confirmados por ahora.
             </p>
           ) : (

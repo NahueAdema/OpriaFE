@@ -220,18 +220,18 @@ export default function AvailabilityPage() {
           ) : null}
 
           {services.length === 0 && !servicesQuery.isLoading ? (
-            <div style={{ textAlign: 'center', padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+            <div style={{ textAlign: 'center', padding: 20, fontSize: 13, color: 'var(--text-secondary)' }}>
               No hay servicios activos.
             </div>
           ) : null}
 
           {availabilityQuery.isFetching ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 20, fontSize: 13, color: 'var(--text-secondary)' }}>
               Calculando disponibilidad…
             </div>
           ) : availabilityQuery.data ? (
             totalSlots === 0 ? (
-              <div style={{ textAlign: 'center', padding: 20, fontSize: 11, color: 'var(--text-secondary)' }}>
+              <div style={{ textAlign: 'center', padding: 20, fontSize: 13, color: 'var(--text-secondary)' }}>
                 No hay horarios disponibles.
               </div>
             ) : (
