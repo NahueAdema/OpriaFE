@@ -24,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="es"
       data-theme="light"
+      suppressHydrationWarning
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
