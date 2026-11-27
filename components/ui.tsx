@@ -1,10 +1,15 @@
 'use client';
 
 import {
+  cloneElement,
   forwardRef,
+  isValidElement,
   useEffect,
+  useId,
+  useRef,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
+  type ReactElement,
   type ReactNode,
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
@@ -135,19 +140,44 @@ export function Field({
   children: ReactNode;
   className?: string;
 }) {
+  const generatedId = useId();
+  const errorId = `${htmlFor ?? generatedId}-error`;
+  const hintId = `${htmlFor ?? generatedId}-hint`;
+  const describedBy =
+    [error ? errorId : null, hint ? hintId : null]
+      .filter(Boolean)
+      .join(' ') || undefined;
+  const childProps = isValidElement(children)
+    ? (children.props as Record<string, unknown>)
+    : undefined;
+  const controlId =
+    (childProps?.id as string | undefined) ?? htmlFor ?? generatedId;
+  const control = isValidElement(children)
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id: controlId,
+        'aria-invalid': error ? true : undefined,
+        'aria-describedby':
+          describedBy ?? (childProps?.['aria-describedby'] as string | undefined),
+      })
+    : children;
+
   return (
     <div className={cn('space-y-1.5', className)}>
       <label
-        htmlFor={htmlFor}
+        htmlFor={controlId}
         className="block text-sm font-medium text-foreground"
       >
         {label}
       </label>
-      {children}
+      {control}
       {error ? (
-        <p className="text-xs font-medium text-error">{error}</p>
+        <p id={errorId} role="alert" className="text-xs font-medium text-error">
+          {error}
+        </p>
       ) : hint ? (
-        <p className="text-xs text-subtle-foreground">{hint}</p>
+        <p id={hintId} className="text-xs text-subtle-foreground">
+          {hint}
+        </p>
       ) : null}
     </div>
   );
@@ -230,7 +260,7 @@ export function FullScreenLoader({ label }: { label?: string }) {
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
+    <div role="alert" className="flex items-start gap-2 rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
       <span>{message}</span>
     </div>
@@ -239,7 +269,7 @@ export function ErrorBanner({ message }: { message: string }) {
 
 export function SuccessBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
+    <div role="status" aria-live="polite" className="flex items-start gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
       <span>{message}</span>
     </div>
@@ -314,14 +344,53 @@ export function Modal({
   footer?: ReactNode;
   wide?: boolean;
 }) {
+  const titleId = useId();
+  const descriptionId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+
+  useEffect(() => {
+    closeRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) {
       return;
     }
 
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const focusable = () =>
+      Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+    focusable()[0]?.focus();
+
     function handleKey(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        onClose();
+        closeRef.current();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const items = focusable();
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (!first || !last) {
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     }
 
@@ -331,8 +400,9 @@ export function Modal({
     return () => {
       document.removeEventListener('keydown', handleKey);
       document.body.style.overflow = '';
+      previouslyFocused?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) {
     return null;
@@ -341,8 +411,11 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-primary-dark/40 p-4 backdrop-blur-sm sm:p-8">
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
         className={cn(
           'w-full rounded-2xl border border-border bg-surface shadow-2xl',
           wide ? 'max-w-2xl' : 'max-w-lg',
@@ -350,9 +423,13 @@ export function Modal({
       >
         <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <h2 id={titleId} className="text-lg font-semibold text-foreground">
+              {title}
+            </h2>
             {description ? (
-              <p className="text-sm text-subtle-foreground">{description}</p>
+              <p id={descriptionId} className="text-sm text-subtle-foreground">
+                {description}
+              </p>
             ) : null}
           </div>
           <button

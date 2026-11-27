@@ -21,9 +21,13 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Estructura
 
 - `app/(app)/*`: páginas protegidas (dashboard, business, services, staff,
-  availability, agenda, cuenta). `app/(app)/layout.tsx` es un Server Component
-  que declara `instant = false`; el guard de sesión vive en
+  availability, agenda, clientes, cuenta). `app/(app)/layout.tsx` es un Server
+  Component que declara `instant = false`; el guard de sesión vive en
   `app/(app)/app-guard.tsx` (Client Component).
+- `app/(app)/clientes/page.tsx`: panel de clientes (búsqueda, ficha con notas y
+  consentimiento, historial y export CSV).
+- `components/appointment-forms.tsx`: modales de alta manual y reprogramación;
+  se usan desde `app/(app)/agenda/page.tsx`.
 - `app/page.tsx`: landing pública (Client Component) con los accesos separados
   de negocio (`/login`) y cliente (`/cliente`).
 - `app/cliente/page.tsx`: portal de clientes (buscador con filtros de ciudad y
@@ -43,7 +47,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - `components/customer/customer-header.tsx`: header con el estado de la sesión
   de cliente. `components/customer-auth-provider.tsx`: contexto de cliente.
 - `components/`: `auth-provider`, `providers` (QueryClient + ambos providers),
-  `shell` (nav) y `ui.tsx` (Button, Card, Field, Input, Select, Modal, etc.).
+  `shell` (nav), `ui.tsx` (Button, Card, Field, Input, Select, Modal, etc.) y
+  `appointment-forms.tsx`.
+- `e2e/`: specs de Playwright + axe (`public-flow.spec.ts`,
+  `panel-a11y.spec.ts`); la configuración está en `playwright.config.ts`.
 - `lib/api.ts`: cliente HTTP y endpoints (`api` staff, `customerApi` cliente,
   `publicApi` anónimo). `lib/types.ts`: contratos. `lib/schemas.ts`: esquemas
   Zod de formularios. `lib/utils.ts`: dinero, fechas y timezone.
@@ -95,6 +102,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - `app/(app)/agenda/page.tsx` muestra mes + agenda diaria. El detalle de un
   turno abre un modal con las acciones válidas y un campo de motivo opcional.
+  «Nuevo turno» usa `CreateAppointmentModal` (envía `Idempotency-Key`) y
+  «Reprogramar» usa `RescheduleAppointmentModal` para turnos
+  `pending`/`confirmed`; ambos invalidan `appointments` y `availability`.
 - Las acciones y transiciones viven en `lib/appointments.ts`
   (`APPOINTMENT_ACTIONS`, `APPOINTMENT_STATUS_LABELS`,
   `APPOINTMENT_STATUS_TONES`). No dupliques esos mapas.
@@ -149,7 +159,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## UI
 
 - Reutilizá los componentes de `components/ui.tsx` y las clases Tailwind del
-  proyecto; no agregues librerías de UI.
+  proyecto; no agregues librerías de UI. `Field`, los banners y `Modal` ya
+  implementan las bases de WCAG 2.1 AA: etiquetas asociadas, `aria-invalid`,
+  `role=alert/status`, foco inicial, trap de Tab, Escape y foco restaurado.
 - Los textos de la interfaz van en español rioplatense.
 - Mostrá errores de API con `ErrorBanner` y confirmaciones con `SuccessBanner`.
 - El borrado de servicios/staff es soft delete: la acción se llama
@@ -162,6 +174,7 @@ npm run dev      # desarrollo en http://localhost:3000
 npm run lint     # ESLint (Next 16)
 npm run build    # build de producción
 npm run start    # servir el build
+npm run test:e2e # Playwright + axe (instalar chromium una vez)
 ```
 
 En Windows/PowerShell usá `npm.cmd` si los shims `.ps1` están bloqueados.

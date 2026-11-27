@@ -366,7 +366,7 @@ export default function Page() {
         className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8"
       >
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="rounded-[28px] bg-foreground text-background p-8 shadow-[0_20px_50px_rgba(36,37,63,.14)]">
+          <div className="rounded-[28px] bg-foreground text-background [--text-muted:#E9E6FF] p-8 shadow-[0_20px_50px_rgba(36,37,63,.14)]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-[var(--accent)]">
                 CONVERSACIÓN REAL

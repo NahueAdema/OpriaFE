@@ -142,6 +142,65 @@ export interface AppointmentStatusInput {
   reason?: string;
 }
 
+export interface AppointmentCreateInput {
+  serviceId: string;
+  staffId?: string;
+  startsAt: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  notes?: string;
+  status?: 'pending' | 'confirmed';
+  consent?: boolean;
+}
+
+export interface AppointmentRescheduleInput {
+  startsAt: string;
+  reason?: string;
+}
+
+/** Panel customer file. Phone identifies both guests and signed-in accounts. */
+export interface PanelCustomer {
+  phone: string;
+  name: string;
+  email: string | null;
+  customerId: string | null;
+  profileId: string | null;
+  notes: string | null;
+  consentAt: string | null;
+  appointmentCount: number;
+  lastAppointmentAt: string | null;
+}
+
+export interface CustomerHistoryEntry {
+  id: string;
+  status: AppointmentStatus;
+  startsAt: string;
+  serviceName: string;
+  staffName: string;
+  priceCents: number;
+  depositType: DepositType;
+  depositValue: number;
+  notes: string | null;
+  statusReason: string | null;
+}
+
+export interface PanelCustomerDetail extends PanelCustomer {
+  history: CustomerHistoryEntry[];
+}
+
+export interface PanelCustomerList {
+  items: PanelCustomer[];
+  total: number;
+}
+
+export interface PanelCustomerUpdate {
+  name?: string;
+  email?: string;
+  notes?: string;
+  consent?: boolean;
+}
+
 export interface PublicBusinessSummary {
   slug: string;
   name: string;

@@ -52,6 +52,8 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
           'mx-auto mt-8 w-full max-w-3xl space-y-2',
           className,
         )}
+        role="search"
+        aria-label="Buscar negocios para reservar"
         onSubmit={(event) => {
           event.preventDefault();
           setSubmitted(term.trim());
@@ -116,9 +118,11 @@ export function BusinessSearch({ className, autoFocus }: BusinessSearchProps) {
 
         {searchQuery.error ? (
           <Card className="p-4 text-sm text-error">
-            {searchQuery.error instanceof Error
-              ? searchQuery.error.message
-              : 'No pudimos buscar negocios.'}
+            <div role="alert">
+              {searchQuery.error instanceof Error
+                ? searchQuery.error.message
+                : 'No pudimos buscar negocios.'}
+            </div>
           </Card>
         ) : null}
 

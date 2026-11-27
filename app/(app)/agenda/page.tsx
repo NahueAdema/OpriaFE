@@ -34,6 +34,10 @@ import {
   todayKeyInZone,
 } from '@/lib/utils';
 import {
+  CreateAppointmentModal,
+  RescheduleAppointmentModal,
+} from '@/components/appointment-forms';
+import {
   Badge,
   Button,
   Card,
@@ -55,6 +59,8 @@ export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [reason, setReason] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [rescheduling, setRescheduling] = useState<Appointment | null>(null);
 
   const businessQuery = useQuery({
     queryKey: ['business'],
@@ -155,6 +161,9 @@ export default function AgendaPage() {
           <p>Gestioná tus citas y mantené tu día en orden.</p>
         </div>
         <div className="title-action agenda-toolbar">
+          <Button type="button" onClick={() => setCreating(true)}>
+            Nuevo turno
+          </Button>
           <div className="agenda-date-controls">
             <button
               type="button"
@@ -400,6 +409,22 @@ export default function AgendaPage() {
             mutation.mutate({ id: selected.id, status });
           }
         }}
+        onReschedule={(appointment) => {
+          setRescheduling(appointment);
+          setSelected(null);
+        }}
+      />
+
+      <CreateAppointmentModal
+        open={creating}
+        initialDate={selectedDate}
+        onClose={() => setCreating(false)}
+        onCreated={() => setCreating(false)}
+      />
+      <RescheduleAppointmentModal
+        appointment={rescheduling}
+        onClose={() => setRescheduling(null)}
+        onRescheduled={() => setRescheduling(null)}
       />
     </>
   );
@@ -414,6 +439,7 @@ function AppointmentModal({
   error,
   onClose,
   onAction,
+  onReschedule,
 }: {
   appointment: Appointment | null;
   timezone: string;
@@ -423,12 +449,15 @@ function AppointmentModal({
   error: string | null;
   onClose: () => void;
   onAction: (status: Exclude<AppointmentStatus, 'pending'>) => void;
+  onReschedule: (appointment: Appointment) => void;
 }) {
   if (!appointment) {
     return null;
   }
 
   const actions = APPOINTMENT_ACTIONS[appointment.status];
+  const canReschedule =
+    appointment.status === 'pending' || appointment.status === 'confirmed';
 
   return (
     <Modal
@@ -444,6 +473,15 @@ function AppointmentModal({
             <Button variant="secondary" onClick={onClose} disabled={pending}>
               Cerrar
             </Button>
+            {canReschedule ? (
+              <Button
+                variant="secondary"
+                onClick={() => onReschedule(appointment)}
+                disabled={pending}
+              >
+                Reprogramar
+              </Button>
+            ) : null}
             {actions.map((action) => (
               <Button
                 key={action.status}

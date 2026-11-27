@@ -197,6 +197,45 @@ export const timeBlockFormSchema = z
     path: ['endsAt'],
   });
 
+export const appointmentCreateFormSchema = z.object({
+  serviceId: z.string().min(1, 'Elegí un servicio'),
+  staffId: z.string().optional(),
+  date: z.string().min(1, 'Elegí una fecha'),
+  startsAt: z.string().min(1, 'Elegí un horario disponible'),
+  customerName: z.string().trim().min(2, 'Ingresá tu nombre').max(120),
+  customerPhone: z.string().trim().min(6, 'Ingresá un teléfono').max(40),
+  customerEmail: z
+    .string()
+    .trim()
+    .max(254)
+    .refine(
+      (value) => value === '' || emailPattern.test(value),
+      'Email inválido',
+    ),
+  notes: z.string().trim().max(500),
+  status: z.enum(['pending', 'confirmed']),
+  consent: z.boolean(),
+});
+
+export const appointmentRescheduleFormSchema = z.object({
+  startsAt: z.string().min(1, 'Elegí la nueva fecha y hora'),
+  reason: z.string().trim().max(500),
+});
+
+export const customerFileFormSchema = z.object({
+  name: z.string().trim().min(2, 'Ingresá un nombre').max(120),
+  email: z
+    .string()
+    .trim()
+    .max(254)
+    .refine(
+      (value) => value === '' || emailPattern.test(value),
+      'Email inválido',
+    ),
+  notes: z.string().trim().max(2000),
+  consent: z.boolean(),
+});
+
 export type LoginFormValues = z.infer<typeof loginFormSchema>;
 export type RegisterFormValues = z.infer<typeof registerFormSchema>;
 export type CustomerLoginFormValues = z.infer<typeof customerLoginFormSchema>;
@@ -209,3 +248,10 @@ export type ServiceFormValues = z.infer<typeof serviceFormSchema>;
 export type StaffFormValues = z.infer<typeof staffFormSchema>;
 export type PublicBookingFormValues = z.infer<typeof publicBookingFormSchema>;
 export type TimeBlockFormValues = z.infer<typeof timeBlockFormSchema>;
+export type AppointmentCreateFormValues = z.infer<
+  typeof appointmentCreateFormSchema
+>;
+export type AppointmentRescheduleFormValues = z.infer<
+  typeof appointmentRescheduleFormSchema
+>;
+export type CustomerFileFormValues = z.infer<typeof customerFileFormSchema>;

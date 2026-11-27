@@ -1,7 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Playwright y el entorno local acceden por 127.0.0.1.
+  allowedDevOrigins: ['127.0.0.1'],
   experimental: {
     agentFeedback: true,
     // The panel is a client-side app (session in localStorage, data fetched

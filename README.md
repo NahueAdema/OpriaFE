@@ -2,9 +2,9 @@
 
 Frontend de Opria: landing pública, espacio de clientes (cuenta, buscador de
 negocios y turnos propios) y panel del negocio (perfil, servicios, equipo,
-horarios, disponibilidad y agenda de turnos). La reserva pública sigue
-funcionando como invitado. Consume la API de `opria-be` (NestJS + Fastify) con
-autenticación JWT y refresh tokens opacos.
+horarios, disponibilidad, clientes, alta manual y reprogramación de turnos). La
+reserva pública sigue funcionando como invitado. Consume la API de `opria-be`
+(NestJS + Fastify) con autenticación JWT y refresh tokens opacos.
 
 ## Stack
 
@@ -12,6 +12,7 @@ autenticación JWT y refresh tokens opacos.
 - TypeScript estricto y Tailwind CSS 4.
 - TanStack Query para estado del servidor.
 - React Hook Form + Zod para formularios.
+- Playwright + `@axe-core/playwright` para e2e y accesibilidad WCAG 2.1 AA.
 - `lucide-react` para iconografía y `date-fns`/`@date-fns/tz` para fechas.
 
 ## Requisitos
@@ -47,7 +48,12 @@ npm run dev      # desarrollo en http://localhost:3000
 npm run lint     # ESLint (Next 16)
 npm run build    # build de producción
 npm run start    # servir el build (por defecto en :3000)
+npm run test:e2e # Playwright + axe (levanta Next en :3100)
+npm run test:e2e:ui # modo interactivo
 ```
+
+Para los tests e2e instalá el navegador una vez con
+`npx playwright install chromium` (en CI: `npx playwright install --with-deps chromium`).
 
 ## Rutas
 
@@ -65,7 +71,8 @@ npm run start    # servir el build (por defecto en :3000)
 | `/services`        | Alta, edición y desactivación de servicios (precio, seña, buffer). |
 | `/staff`           | Equipo: perfil, servicios asignados, horario semanal y bloqueos.   |
 | `/availability`    | Slots reservables por servicio, fecha y profesional.               |
-| `/agenda`          | Calendario mensual y agenda diaria; confirmar/rechazar turnos.     |
+| `/agenda`          | Calendario mensual y agenda diaria; nuevo turno, reprogramación y confirmar/rechazar. |
+| `/clientes`        | Panel de clientes: búsqueda, ficha, notas, consentimiento, historial y CSV. |
 | `/cuenta`          | Datos de la cuenta, cambio de contraseña y cierre de sesión.       |
 | `/reservar`        | Buscador público de negocios con filtros.                          |
 | `/reservar/[slug]` | Reserva pública (invitado o cliente con sesión).                   |
@@ -155,8 +162,13 @@ El cliente (`lib/api.ts`) cubre:
 - `GET|POST /staff/:id/time-blocks`, `DELETE /staff/:id/time-blocks/:blockId`.
 - `GET /availability?serviceId=&date=YYYY-MM-DD&staffId=`.
 - `GET /appointments?from=&to=&status=&staffId=&serviceId=&limit=`.
+- `POST /appointments` (alta manual; envía `Idempotency-Key`).
 - `PATCH /appointments/:id/status` (confirmar, rechazar, completar, etc.;
   acepta un `reason` opcional).
+- `PATCH /appointments/:id/reschedule` (reprograma conservando el `id`).
+- `GET /customers?q=&limit=`, `GET /customers/:phone`,
+  `PATCH /customers/:phone` (notas y consentimiento) y
+  `GET /customers/export?q=` (CSV).
 
 `publicApi` (sin credenciales) cubre el flujo público:
 
@@ -193,6 +205,22 @@ Los errores de la API llegan como Problem Details (RFC 9457) y se exponen con
   dupliques esos mapas en las páginas.
 - El badge de pendientes del shell (`components/shell.tsx`) se actualiza al
   confirmar o rechazar (`invalidateQueries` de `appointments`).
+- «Nuevo turno» abre `CreateAppointmentModal` (`components/appointment-forms.tsx`):
+  valida disponibilidad, permite `pending`/`confirmed` y profesional opcional
+  (el backend asigna uno si falta). Envía `Idempotency-Key`; ante un `409` por
+  payload distinto con la misma clave, muestra el error de Problem Details.
+- «Reprogramar» aparece en turnos `pending`/`confirmed` y abre
+  `RescheduleAppointmentModal`: elige nueva fecha/hora, conserva el profesional
+  y respeta `cancellationHours`. Tras cualquier mutación se invalidan
+  `appointments` y `availability`.
+
+## Clientes del panel
+
+`/clientes` busca por nombre, teléfono o email sobre `GET /customers`. La tabla
+incluye invitados (turnos sin cuenta) y cuentas de cliente. La ficha muestra
+datos de contacto, notas internas, consentimiento e historial de turnos; los
+cambios de notas/consentimiento se guardan con `PATCH /customers/:phone`.
+«Exportar CSV» descarga `GET /customers/export` con BOM UTF-8 y separador `;`.
 
 ## Reserva pública
 
@@ -218,6 +246,21 @@ Los errores de la API llegan como Problem Details (RFC 9457) y se exponen con
   timezone del negocio; los slots de la respuesta son instantes UTC y se
   muestran en la timezone del negocio.
 - Los servicios y el staff usan soft delete: "desactivar" pone `active=false`.
+
+## Accesibilidad y tests
+
+Los componentes compartidos de `components/ui.tsx` implementan la base WCAG
+2.1 AA: `Field` vincula `label`, `aria-invalid` y `aria-describedby`; los
+banners usan `role="alert"`/`role="status"`; `Modal` pone el foco al abrir,
+atrapa Tab, cierra con Escape y restaura el foco anterior. El login usa
+`role=tablist/tab/tabpanel`, el buscador público `role=search`, el calendario
+etiqueta días y slots con `aria-pressed`, y los tokens de `app/globals.css`
+tienen contraste AA.
+
+`npm run test:e2e` corre 10 pruebas en Chromium (`e2e/`): axe sobre las rutas
+públicas y del panel, navegación por teclado del buscador y roles de pestañas.
+`playwright.config.ts` levanta `next dev` en `:3100` y las mismas pruebas corren
+en el job `playwright` de `.github/workflows/ci.yml`.
 
 ## Notas de desarrollo
 
@@ -262,8 +305,10 @@ bundle, así que cambiar la variable sin recompilar no alcanza. En el backend,
 Los workflows viven en `.github/workflows/`:
 
 - `ci.yml`: corre en push a `main`, en pull requests y por disparo manual.
-  Instala con `npm ci`, ejecuta `npm run lint` y `npm run build`. La URL de la
-  API se toma de la variable `NEXT_PUBLIC_API_URL` (o el default local).
+  El job `build` instala con `npm ci`, ejecuta `npm run lint` y `npm run build`.
+  El job `playwright` instala Chromium, corre `npm run test:e2e` y sube el
+  reporte si falla. La URL de la API se toma de `NEXT_PUBLIC_API_URL` (o el
+  default local).
 - `deploy.yml`: escucha la finalización de `CI` en `main` (o un disparo manual)
   y solo actúa si `NETLIFY_DEPLOY_ENABLED=true`. Dispara un build hook de
   Netlify; es Netlify quien clona el repo, compila y publica.

@@ -145,7 +145,7 @@ export function LoginClient({
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="relative hidden w-[46%] flex-col justify-between overflow-hidden bg-primary-dark p-10 text-white lg:flex">
+      <aside className="relative hidden w-[46%] flex-col justify-between overflow-hidden bg-primary-dark p-10 text-white [--text-muted:#E9E6FF] lg:flex">
         <div className="absolute top-24 -left-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
         <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
 
@@ -209,9 +209,17 @@ export function LoginClient({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-surface p-1 shadow-sm">
+          <div
+            role="tablist"
+            aria-label="Tipo de acceso"
+            className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-surface p-1 shadow-sm"
+          >
             <button
               type="button"
+              role="tab"
+              id="tab-login"
+              aria-selected={mode === 'login'}
+              aria-controls="panel-login"
               onClick={() => switchMode('login')}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                 mode === 'login'
@@ -223,6 +231,10 @@ export function LoginClient({
             </button>
             <button
               type="button"
+              role="tab"
+              id="tab-register"
+              aria-selected={mode === 'register'}
+              aria-controls="panel-register"
               onClick={() => switchMode('register')}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                 mode === 'register'
@@ -235,7 +247,10 @@ export function LoginClient({
           </div>
 
           {error ? (
-            <div className="space-y-1 rounded-xl border border-error bg-error/10 px-3 py-2 text-sm text-error">
+            <div
+              role="alert"
+              className="space-y-1 rounded-xl border border-error bg-error/10 px-3 py-2 text-sm text-error"
+            >
               <p>{error}</p>
               {isCustomerAccount ? (
                 <Link
@@ -250,6 +265,9 @@ export function LoginClient({
 
           {mode === 'login' ? (
             <form
+              id="panel-login"
+              role="tabpanel"
+              aria-labelledby="tab-login"
               onSubmit={loginForm.handleSubmit(onLogin)}
               className="space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
             >
@@ -292,6 +310,9 @@ export function LoginClient({
             </form>
           ) : (
             <form
+              id="panel-register"
+              role="tabpanel"
+              aria-labelledby="tab-register"
               onSubmit={registerForm.handleSubmit(onRegister)}
               className="space-y-4 rounded-2xl border border-border bg-surface p-5 shadow-sm"
             >

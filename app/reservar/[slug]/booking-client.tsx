@@ -620,11 +620,12 @@ export function BookingClient({ slug }: { slug: string }) {
                               type="button"
                               disabled={disabled}
                               onClick={() => chooseDay(dateKey)}
-                              title={
+                              aria-label={`${formatDateKeyLong(dateKey)}: ${
                                 available
                                   ? `${day?.slots ?? 0} horarios disponibles`
-                                  : 'Sin horarios'
-                              }
+                                  : 'sin horarios'
+                              }`}
+                              aria-pressed={isSelected}
                               className={cn(
                                 'flex h-9 flex-col items-center justify-center rounded-lg text-sm transition',
                                 isSelected
@@ -691,6 +692,8 @@ export function BookingClient({ slug }: { slug: string }) {
                               key={slot.startsAt}
                               type="button"
                               onClick={() => selectSlot(slot.startsAt)}
+                              aria-label={`Horario ${formatTimeInZone(slot.startsAt, timezone)}`}
+                              aria-pressed={active}
                               className={cn(
                                 'rounded-xl border px-2 py-2 text-sm font-medium transition',
                                 active
@@ -776,6 +779,7 @@ export function BookingClient({ slug }: { slug: string }) {
                   ) : null}
 
                   <form
+                    aria-label="Datos para la reserva"
                     className="space-y-3"
                     onSubmit={form.handleSubmit((values) =>
                       mutation.mutate(values),

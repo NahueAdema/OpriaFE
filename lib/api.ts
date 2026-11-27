@@ -6,7 +6,9 @@ import {
 } from './customer-auth-storage';
 import type {
   Appointment,
+  AppointmentCreateInput,
   AppointmentList,
+  AppointmentRescheduleInput,
   AppointmentStatus,
   AppointmentStatusInput,
   AuthResult,
@@ -21,6 +23,9 @@ import type {
   CustomerLoginInput,
   CustomerProfile,
   CustomerRegisterInput,
+  PanelCustomerDetail,
+  PanelCustomerList,
+  PanelCustomerUpdate,
   LoginInput,
   ProblemDetails,
   PublicAppointment,
@@ -457,6 +462,25 @@ export const api = {
         })}`,
       );
     },
+    create(
+      input: AppointmentCreateInput,
+      idempotencyKey: string = crypto.randomUUID(),
+    ): Promise<Appointment> {
+      return apiFetch<Appointment>('/appointments', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': idempotencyKey },
+        body: JSON.stringify(input),
+      });
+    },
+    reschedule(
+      id: string,
+      input: AppointmentRescheduleInput,
+    ): Promise<Appointment> {
+      return apiFetch<Appointment>(`/appointments/${id}/reschedule`, {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+      });
+    },
     updateStatus(
       id: string,
       input: AppointmentStatusInput,
@@ -465,6 +489,39 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify(input),
       });
+    },
+  },
+
+  customers: {
+    list(params: { q?: string; limit?: number } = {}): Promise<PanelCustomerList> {
+      return apiFetch<PanelCustomerList>(
+        `/customers${query({
+          q: params.q,
+          limit: params.limit === undefined ? undefined : String(params.limit),
+        })}`,
+      );
+    },
+    detail(phone: string): Promise<PanelCustomerDetail> {
+      return apiFetch<PanelCustomerDetail>(
+        `/customers/${encodeURIComponent(phone)}`,
+      );
+    },
+    update(
+      phone: string,
+      input: PanelCustomerUpdate,
+    ): Promise<PanelCustomerDetail> {
+      return apiFetch<PanelCustomerDetail>(
+        `/customers/${encodeURIComponent(phone)}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify(input),
+        },
+      );
+    },
+    export(params: { q?: string } = {}): Promise<string> {
+      return apiFetch<string>(
+        `/customers/export${query({ q: params.q })}`,
+      );
     },
   },
 };

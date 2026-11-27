@@ -20,6 +20,7 @@ import {
   Settings2,
   Store,
   Sun,
+  UserRound,
   Users,
   X,
 } from 'lucide-react';
@@ -34,6 +35,7 @@ const navigation = [
   { href: '/business', label: 'Negocio', icon: Store },
   { href: '/services', label: 'Servicios', icon: Scissors },
   { href: '/staff', label: 'Equipo', icon: Users },
+  { href: '/clientes', label: 'Clientes', icon: UserRound },
   { href: '/availability', label: 'Disponibilidad', icon: CalendarClock },
   { href: '/cuenta', label: 'Mi cuenta', icon: Settings2 },
 ];
@@ -91,6 +93,8 @@ export function Shell({ children }: { children: ReactNode }) {
         type="button"
         aria-label="Cerrar navegación"
         className={`mobile-scrim ${open ? 'visible' : ''}`}
+        tabIndex={open ? 0 : -1}
+        aria-hidden={!open}
         onClick={() => setOpen(false)}
       />
       <aside className={`sidebar ${open ? 'sidebar-open' : ''}`}>
@@ -110,7 +114,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </button>
         </div>
         <div className="workspace-label">ESPACIO DE TRABAJO</div>
-        <button className="workspace-switch">
+        <button className="workspace-switch" type="button" disabled>
           <div className="workspace-avatar">
             {(tenant?.name ?? 'O').charAt(0).toUpperCase()}
           </div>
@@ -131,6 +135,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
+                aria-current={active ? 'page' : undefined}
                 className={`nav-link ${active ? 'nav-active' : ''}`}
               >
                 <Icon size={18} strokeWidth={1.8} />
@@ -170,6 +175,9 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <div className="main-column">
         <header className="topbar">
+          <nav aria-label="Acciones rápidas" className="sr-only">
+            <a href="#main-content">Saltar al contenido principal</a>
+          </nav>
           <button
             className="mobile-menu"
             aria-label="Abrir menú"
@@ -183,7 +191,10 @@ export function Shell({ children }: { children: ReactNode }) {
             <strong>{activeNav}</strong>
           </div>
           <div className="top-actions">
-            <button className="icon-button search-button" aria-label="Buscar">
+            <button
+              className="icon-button search-button"
+              aria-label="Buscar ⌘ K"
+            >
               <Search size={18} />
               <span>Buscar</span>
               <kbd>⌘ K</kbd>
@@ -215,7 +226,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="page-content">
+        <main id="main-content" className="page-content">
           {children}
           <footer className="app-footer">
             <span>© 2024 opria · Hecho para que tu negocio florezca</span>
